@@ -1,0 +1,21 @@
+﻿Compilación iniciada a las 29/03/2016 11:14:26 a.m..
+     1>Proyecto "C:\Users\Administrador\Desktop\DuxGSS6E3\zGameServer_NA\GameServer\GameServer.vcxproj" en el nodo 2 (build destinos).
+       El archivo del proyecto contiene ToolsVersion="12.0", que esta versión de MSBuild no admite. Se tratará el proyecto como si contuviera ToolsVersion="4.0".
+     1>InitializeBuildStatus:
+         Aplicando tarea Touch a ".\Release\GameServer.unsuccessfulbuild".
+       ClCompile:
+         Todas las salidas están actualizadas.
+         Todas las salidas están actualizadas.
+       ResourceCompile:
+         Todas las salidas están actualizadas.
+       Link:
+         Todas las salidas están actualizadas.
+         GameServer.vcxproj -> C:\Users\Administrador\Desktop\DuxGSS6E3\zGameServer_NA\GameServer\..\Release\GameServer.exe
+       FinalizeBuildStatus:
+         Se eliminará el archivo ".\Release\GameServer.unsuccessfulbuild".
+         Aplicando tarea Touch a ".\Release\GameServer.lastbuildstate".
+     1>Compilación del proyecto terminada "C:\Users\Administrador\Desktop\DuxGSS6E3\zGameServer_NA\GameServer\GameServer.vcxproj" (build destinos).
+
+Compilación correcta.
+
+Tiempo transcurrido 00:00:00.38

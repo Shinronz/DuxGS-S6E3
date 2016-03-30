@@ -135,7 +135,7 @@
 // ----
 #define ZEONWINDOW_STAT				// Zeon custom statistic on window
 #define ZEONWINDOW					// Zeon custom window for gameserver
-#define GAMESERVER_WIDTH		750	// Width of window
+#define GAMESERVER_WIDTH		800	// Width of window
 #define GAMESERVER_HEIGHT		600 // Height of window
 // ----
 #define ZEONGAMESERVER				// Zeon custom define

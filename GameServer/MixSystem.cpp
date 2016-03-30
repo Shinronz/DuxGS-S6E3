@@ -22,9 +22,13 @@
 #include "LuckyItem.h"
 #ifdef __CUSTOMS__
 #include "MixOption.h"
+
 #endif
 // -------------------------------------------------------------------------------
-
+#ifdef SEPARATE_LOGS
+#include "LogToFile.h"
+CLogToFile g_ChaosBoxLog("ChaosBox", ".\\LOG\\ChaosBox", TRUE);
+#endif
 CMixSystem g_MixSystem;
 // -------------------------------------------------------------------------------
 
@@ -263,7 +267,11 @@ int CMixSystem::ChaosBoxMix(LPOBJ lpObj, int & Result2, int & Result3)
 
 			if ( lpObj->pChaosBox[n].m_Type == ITEMGET(13,14) ) //updated 1.01.00
 			{
+#ifdef SEPARATE_LOGS 
+			g_ChaosBoxLog.Output("[%s][%s] Fail to mix because of Item(13, 14). It can't be in default ChaosMix", lpObj->AccountID, lpObj->Name);
+#else
 				LogAdd("[%s][%s] Fail to mix because of Item(13, 14). It can't be in default ChaosMix", lpObj->AccountID, lpObj->Name);
+#endif
 				return false;
 			}
 
@@ -278,6 +286,15 @@ int CMixSystem::ChaosBoxMix(LPOBJ lpObj, int & Result2, int & Result3)
 			}
 
 			ItemIsBufExOption(ExOption, &lpObj->pChaosBox[n]);
+#ifdef SEPARATE_LOGS 
+			g_ChaosBoxLog.Output("[%s][%s] CBMix [%d,%s,%d,%d,%d,%d]serial:[%u][%d][%d] Ex:[%d,%d,%d,%d,%d,%d,%d]",
+				lpObj->AccountID, lpObj->Name, n, lpObj->pChaosBox[n].GetName(),
+				lpObj->pChaosBox[n].m_Level, lpObj->pChaosBox[n].m_Option1,
+				lpObj->pChaosBox[n].m_Option2, lpObj->pChaosBox[n].m_Option3,
+				lpObj->pChaosBox[n].m_Number, (int)lpObj->pChaosBox[n].m_Durability,
+				nv, ExOption[0], ExOption[1], ExOption[2], ExOption[3], ExOption[4], ExOption[5],
+				ExOption[6], lpObj->pChaosBox[n].m_SetOption);
+#else
 			LogAdd("[%s][%s] CBMix [%d,%s,%d,%d,%d,%d]serial:[%u][%d][%d] Ex:[%d,%d,%d,%d,%d,%d,%d]",
 				lpObj->AccountID, lpObj->Name, n, lpObj->pChaosBox[n].GetName(),
 				lpObj->pChaosBox[n].m_Level, lpObj->pChaosBox[n].m_Option1,
@@ -285,6 +302,7 @@ int CMixSystem::ChaosBoxMix(LPOBJ lpObj, int & Result2, int & Result3)
 				lpObj->pChaosBox[n].m_Number, (int)lpObj->pChaosBox[n].m_Durability,
 				nv, ExOption[0], ExOption[1], ExOption[2], ExOption[3], ExOption[4], ExOption[5],
 				ExOption[6], lpObj->pChaosBox[n].m_SetOption);
+#endif
 		}
 	}
 
@@ -325,7 +343,11 @@ int CMixSystem::ChaosBoxMix(LPOBJ lpObj, int & Result2, int & Result3)
 	lpObj->ChaosMoney += lpObj->m_AddMixMoney;
 #endif
 
+#ifdef SEPARATE_LOGS 
+			g_ChaosBoxLog.Output("[%s][%s] CBMix need Zen : %d SuccessRate : %d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosMoney, lpObj->ChaosSuccessRate, iCharmOfLuckCount);
+#else
 	LogAddTD("[%s][%s] CBMix need Zen : %d SuccessRate : %d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosMoney, lpObj->ChaosSuccessRate, iCharmOfLuckCount);
+#endif
 
 	if(WingCharmItemNum > -1) //season4.5 add-on
 	{
@@ -349,7 +371,11 @@ int CMixSystem::ChaosBoxMix(LPOBJ lpObj, int & Result2, int & Result3)
 			Result3 = 30;//40;
 			break;
 		default:
+#ifdef SEPARATE_LOGS 
+			g_ChaosBoxLog.Output("[MixSystem] WingCharmItemNum => %d , WingCharmIndex => %d", WingCharmItemNum, WingCharmIndex);
+#else
 			LogAddTD("[MixSystem] WingCharmItemNum => %d , WingCharmIndex => %d", WingCharmItemNum, WingCharmIndex);
+#endif
 		}
 	}
 
@@ -517,12 +543,20 @@ void CMixSystem::DefaultChaosMix(LPOBJ lpObj)
 			ChaosBoxItemDown(lpObj);
 			GCUserChaosBoxSend(lpObj, 0);
 			DataSend(aIndex, (LPBYTE)&pMsg, pMsg.h.size);
+#ifdef SEPARATE_LOGS 
+			g_ChaosBoxLog.Output("[%s][%s] CBMix Fail %d Money : %d-%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, lpObj->ChaosMoney);
+#else
 			LogAddTD("[%s][%s] CBMix Fail %d Money : %d-%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, lpObj->ChaosMoney);
+#endif
 			lpObj->ChaosLock = FALSE;
 		}
 		else
 		{
+#ifdef SEPARATE_LOGS 
+			g_ChaosBoxLog.Output("[%s][%s] CBMix Success Rate:%d Money : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->ChaosMoney);
+#else
 			LogAddTD("[%s][%s] CBMix Success Rate:%d Money : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->ChaosMoney);
+#endif
 		}
 
 		if ( gChaosEvent != FALSE )
@@ -545,7 +579,17 @@ void CMixSystem::LogDQChaosItem(LPOBJ lpObj)
 		if ( lpObj->pChaosBox[n].IsItem() == TRUE )
 		{
 			::ItemIsBufExOption(ExOption, &lpObj->pChaosBox[n] );
-
+#ifdef SEPARATE_LOGS 
+			g_ChaosBoxLog.Output("[DevilSquare,%d] [%s][%s] CBMix [%d,%s,%d,%d,%d,%d]serial:[%u][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d] 380Ex[%d] HO:[%d,%d]",
+				lpObj->pChaosBox[n].m_Level,
+				lpObj->AccountID, lpObj->Name, n, lpObj->pChaosBox[n].GetName(), lpObj->pChaosBox[n].m_Level,
+				lpObj->pChaosBox[n].m_Option1, lpObj->pChaosBox[n].m_Option2, lpObj->pChaosBox[n].m_Option3, 
+				lpObj->pChaosBox[n].m_Number, (int)lpObj->pChaosBox[n].m_Durability, 
+				ExOption[0], ExOption[1], ExOption[2], ExOption[3], ExOption[4], ExOption[5], ExOption[6],
+				lpObj->pChaosBox[n].m_SetOption, lpObj->pChaosBox[n].m_ItemOptionEx >> 7,
+				g_kJewelOfHarmonySystem.GetItemStrengthenOption(&lpObj->pChaosBox[n]),
+				g_kJewelOfHarmonySystem.GetItemOptionLevel(&lpObj->pChaosBox[n]));
+#else
 			LogAddTD("[DevilSquare,%d] [%s][%s] CBMix [%d,%s,%d,%d,%d,%d]serial:[%u][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d] 380Ex[%d] HO:[%d,%d]",
 				lpObj->pChaosBox[n].m_Level,
 				lpObj->AccountID, lpObj->Name, n, lpObj->pChaosBox[n].GetName(), lpObj->pChaosBox[n].m_Level,
@@ -555,6 +599,7 @@ void CMixSystem::LogDQChaosItem(LPOBJ lpObj)
 				lpObj->pChaosBox[n].m_SetOption, lpObj->pChaosBox[n].m_ItemOptionEx >> 7,
 				g_kJewelOfHarmonySystem.GetItemStrengthenOption(&lpObj->pChaosBox[n]),
 				g_kJewelOfHarmonySystem.GetItemOptionLevel(&lpObj->pChaosBox[n]));
+#endif
 		}
 	}
 }
@@ -573,7 +618,11 @@ int CMixSystem::CheckDevilSquareItem(LPOBJ lpObj, int & eventitemcount, int & it
 	int iCharmOfLuckCount = 0;
 	BOOL bCharmOfLuckOver = FALSE;
 
+#ifdef SEPARATE_LOGS 
+	g_ChaosBoxLog.Output("[DevilSquare] Search DevilSquareItem");
+#else
 	LogAdd("[DevilSquare] Search DevilSquareItem");
+#endif
 
 	for ( int n=0;n<CHAOS_BOX_SIZE;n++)
 	{
@@ -638,19 +687,31 @@ int CMixSystem::CheckDevilSquareItem(LPOBJ lpObj, int & eventitemcount, int & it
 
 	if ( FoundOtherItem != FALSE )
 	{
+#ifdef SEPARATE_LOGS 
+		g_ChaosBoxLog.Output("[DevilSquare] Other DQItems Found");
+#else
 		LogAdd("[DevilSquare] Other DQItems Found");
+#endif
 		return 0;
 	}
 
 	if ( bLevelCheck != FALSE )
 	{
+#ifdef SEPARATE_LOGS 
+		g_ChaosBoxLog.Output("[DevilSquare] DiffLevel DQItems Found");
+#else
 		LogAdd("[DevilSquare] DiffLevel DQItems Found");
+#endif
 		return 3;
 	}
 
 	if ( bCharmOfLuckOver == TRUE )
 	{
+#ifdef SEPARATE_LOGS 
+		g_ChaosBoxLog.Output("[DevilSquare] Charm Of Luck Count Over");
+#else
 		LogAdd("[DevilSquare] Charm Of Luck Count Over");
+#endif
 		return 4;
 	}
 
@@ -665,8 +726,11 @@ int CMixSystem::CheckDevilSquareItem(LPOBJ lpObj, int & eventitemcount, int & it
 		LogDQChaosItem(lpObj);
 		return 2;
 	}
-
+#ifdef SEPARATE_LOGS 
+	g_ChaosBoxLog.Output("[DevilSquare] DQItems Not Found");
+#else
 	LogAdd("[DevilSquare] DQItems Not Found");
+#endif
 
 	return 0;
 }
@@ -682,8 +746,11 @@ BOOL CMixSystem::DevilSquareEventChaosMix(LPOBJ lpObj, BOOL bCheckType, int iIte
 	PHeadSetB((LPBYTE)&pMsg.h, 0x86, sizeof(PMSG_CHAOSMIXRESULT));
 	pMsg.Result = CB_ERROR;
 	lpObj->ChaosLock = TRUE;
-
+#ifdef SEPARATE_LOGS 
+	g_ChaosBoxLog.Output("[DevilSquare] Chaos Mix Start");
+#else
 	LogAddTD("[DevilSquare] Chaos Mix Start");
+#endif
 
 	INT nChaosNeedMoney = 0;
 
@@ -740,7 +807,11 @@ BOOL CMixSystem::DevilSquareEventChaosMix(LPOBJ lpObj, BOOL bCheckType, int iIte
 		break;
 
 	default:
+#ifdef SEPARATE_LOGS 
+		g_ChaosBoxLog.Output("[DevilSquare] [%s][%s] Invalid DQItem Level [%d]", lpObj->AccountID, lpObj->Name, iItemLevel);
+#else
 		LogAdd("[DevilSquare] [%s][%s] Invalid DQItem Level [%d]", lpObj->AccountID, lpObj->Name, iItemLevel);
+#endif
 
 		pMsg.Result = CB_INVALID_ITEM_LEVEL;
 		DataSend(aIndex, (LPBYTE)&pMsg, pMsg.h.size);
@@ -765,7 +836,11 @@ BOOL CMixSystem::DevilSquareEventChaosMix(LPOBJ lpObj, BOOL bCheckType, int iIte
 
 	if ( (lpObj->Money - nChaosNeedMoney) < 0 )
 	{
+#ifdef SEPARATE_LOGS 
+		g_ChaosBoxLog.Output("[DevilSquare] [%s][%s] CBMix Not Enough Money [%d] need zen [%d]", lpObj->AccountID, lpObj->Name, lpObj->Money, nChaosNeedMoney);
+#else
 		LogAddTD("[DevilSquare] [%s][%s] CBMix Not Enough Money [%d] need zen [%d]", lpObj->AccountID, lpObj->Name, lpObj->Money, nChaosNeedMoney);
+#endif
 		pMsg.Result = CB_NOT_ENOUGH_ZEN;
 		DataSend(aIndex, (LPBYTE)&pMsg, pMsg.h.size);
 		lpObj->ChaosLock = FALSE;
@@ -816,12 +891,20 @@ BOOL CMixSystem::DevilSquareEventChaosMix(LPOBJ lpObj, BOOL bCheckType, int iIte
 		GCUserChaosBoxSend(lpObj, 0);
 		DataSend(aIndex, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[DevilSquare,%d] [%s][%s] CBMix Fail %d Money : %d-%d", iItemLevel, lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney);
+#else
 		LogAddTD("[DevilSquare,%d] [%s][%s] CBMix Fail %d Money : %d-%d", iItemLevel, lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney);
+#endif
 		lpObj->ChaosLock = FALSE;
 	}
 	else
 	{
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[DevilSquare,%d] [%s][%s] CBMix Success Rate:%d Money : %d", iItemLevel, lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, nChaosNeedMoney);
+#else
 		LogAddTD("[DevilSquare,%d] [%s][%s] CBMix Success Rate:%d Money : %d", iItemLevel, lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, nChaosNeedMoney);
+#endif
 	}
 
 	::gObjInventoryCommit(lpObj->m_Index);
@@ -852,7 +935,11 @@ void CMixSystem::DevilSquareItemChaosMix(LPOBJ lpObj)
 			{
 				pMsg.Result = CB_INCORRECT_MIX_ITEMS;
 				DataSend(aIndex, (LPBYTE)&pMsg, pMsg.h.size);
+#ifdef SEPARATE_LOGS
+				g_ChaosBoxLog.Output("[DevilSquare] DiffLevel Devil's Key or Eyes [%d]", eventitemcount);
+#else
 				LogAdd("[DevilSquare] DiffLevel Devil's Key or Eyes [%d]", eventitemcount);
+#endif
 				lpObj->ChaosLock = FALSE;
 
 				return;
@@ -862,7 +949,11 @@ void CMixSystem::DevilSquareItemChaosMix(LPOBJ lpObj)
 			{
 				pMsg.Result = CB_INCORRECT_MIX_ITEMS;
 				DataSend(aIndex, (LPBYTE)&pMsg, pMsg.h.size);
+#ifdef SEPARATE_LOGS
+				g_ChaosBoxLog.Output("[DevilSquare] Not Found Chaos Gem [%d]", eventitemcount);
+#else
 				LogAdd("[DevilSquare] Not Found Chaos Gem [%d]", eventitemcount);
+#endif
 				lpObj->ChaosLock = FALSE;
 
 				return;
@@ -872,7 +963,11 @@ void CMixSystem::DevilSquareItemChaosMix(LPOBJ lpObj)
 			{
 				pMsg.Result = 0xF0;
 				DataSend(aIndex, (LPBYTE)&pMsg, pMsg.h.size);
+#ifdef SEPARATE_LOGS
+				g_ChaosBoxLog.Output("[DevilSquare] Charm Of Luck Over 10% [%d]", eventitemcount);
+#else
 				LogAdd("[DevilSquare] Charm Of Luck Over 10% [%d]", eventitemcount);
+#endif
 				lpObj->ChaosLock = FALSE;
 
 				return;
@@ -883,7 +978,11 @@ void CMixSystem::DevilSquareItemChaosMix(LPOBJ lpObj)
 			{
 				pMsg.Result = CB_TOO_MANY_ITEMS;
 				DataSend(aIndex, (LPBYTE)&pMsg, pMsg.h.size);
+#ifdef SEPARATE_LOGS
+				g_ChaosBoxLog.Output("[DevilSquare] Too many Devil's Key or Eyes [%d]", eventitemcount);
+#else
 				LogAdd("[DevilSquare] Too many Devil's Key or Eyes [%d]", eventitemcount);
+#endif
 				lpObj->ChaosLock = FALSE;
 
 				return;
@@ -941,6 +1040,16 @@ void CMixSystem::LogPlusItemLevelChaosItem(LPOBJ lpObj, int iPlusMixLevel)
 			else if ( iPlusMixLevel == 50 )
 				iMixLevel = 6;
 
+#ifdef SEPARATE_LOGS
+				g_ChaosBoxLog.Output("[PlusItemLevel,%d] [%s][%s] CBMix [%d,%s,%d,%d,%d,%d]serial:[%u][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d] 380Ex:[%d] HO:[%d,%d]", iMixLevel,
+					lpObj->AccountID, lpObj->Name, n, lpObj->pChaosBox[n].GetName(), lpObj->pChaosBox[n].m_Level,
+					lpObj->pChaosBox[n].m_Option1, lpObj->pChaosBox[n].m_Option2, lpObj->pChaosBox[n].m_Option3, 
+					lpObj->pChaosBox[n].m_Number, (int)lpObj->pChaosBox[n].m_Durability, 
+					ExOption[0], ExOption[1], ExOption[2], ExOption[3], ExOption[4], ExOption[5], ExOption[6], lpObj->pChaosBox[n].m_SetOption,
+					lpObj->pChaosBox[n].m_ItemOptionEx >> 7,
+					g_kJewelOfHarmonySystem.GetItemOptionLevel(&lpObj->pChaosBox[n]),
+					g_kJewelOfHarmonySystem.GetItemStrengthenOption(&lpObj->pChaosBox[n]));
+#else
 			LogAddTD("[PlusItemLevel,%d] [%s][%s] CBMix [%d,%s,%d,%d,%d,%d]serial:[%u][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d] 380Ex:[%d] HO:[%d,%d]", iMixLevel,
 				lpObj->AccountID, lpObj->Name, n, lpObj->pChaosBox[n].GetName(), lpObj->pChaosBox[n].m_Level,
 				lpObj->pChaosBox[n].m_Option1, lpObj->pChaosBox[n].m_Option2, lpObj->pChaosBox[n].m_Option3, 
@@ -949,6 +1058,7 @@ void CMixSystem::LogPlusItemLevelChaosItem(LPOBJ lpObj, int iPlusMixLevel)
 				lpObj->pChaosBox[n].m_ItemOptionEx >> 7,
 				g_kJewelOfHarmonySystem.GetItemOptionLevel(&lpObj->pChaosBox[n]),
 				g_kJewelOfHarmonySystem.GetItemStrengthenOption(&lpObj->pChaosBox[n]));
+#endif
 		}
 	}
 }
@@ -965,6 +1075,22 @@ void CMixSystem::LogChaosItem(LPOBJ lpObj, LPSTR sLogType)
 		{
 			::ItemIsBufExOption(ExOption, &lpObj->pChaosBox[n]);
 
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[%s] [%s][%s] CBMix [%d,%s,%d,%d,%d,%d]serial:[%u][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d] 380:[%d] HO:[%d,%d] Socket[%d,%d,%d,%d,%d]",
+				sLogType, lpObj->AccountID, lpObj->Name, n, lpObj->pChaosBox[n].GetName(), lpObj->pChaosBox[n].m_Level,
+				lpObj->pChaosBox[n].m_Option1, lpObj->pChaosBox[n].m_Option2, lpObj->pChaosBox[n].m_Option3, 
+				lpObj->pChaosBox[n].m_Number, (int)lpObj->pChaosBox[n].m_Durability, 
+				ExOption[0], ExOption[1], ExOption[2], ExOption[3], ExOption[4], ExOption[5], ExOption[6], lpObj->pChaosBox[n].m_SetOption,
+				lpObj->pChaosBox[n].m_ItemOptionEx >> 7,
+				g_kJewelOfHarmonySystem.GetItemStrengthenOption(&lpObj->pChaosBox[n]),
+				g_kJewelOfHarmonySystem.GetItemOptionLevel(&lpObj->pChaosBox[n]),
+				//season4 add-on
+				lpObj->pChaosBox[n].m_SocketOption[0],
+				lpObj->pChaosBox[n].m_SocketOption[1],
+				lpObj->pChaosBox[n].m_SocketOption[2],
+				lpObj->pChaosBox[n].m_SocketOption[3],
+				lpObj->pChaosBox[n].m_SocketOption[4]);
+#else			
 			LogAddTD("[%s] [%s][%s] CBMix [%d,%s,%d,%d,%d,%d]serial:[%u][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d] 380:[%d] HO:[%d,%d] Socket[%d,%d,%d,%d,%d]",
 				sLogType, lpObj->AccountID, lpObj->Name, n, lpObj->pChaosBox[n].GetName(), lpObj->pChaosBox[n].m_Level,
 				lpObj->pChaosBox[n].m_Option1, lpObj->pChaosBox[n].m_Option2, lpObj->pChaosBox[n].m_Option3, 
@@ -979,6 +1105,7 @@ void CMixSystem::LogChaosItem(LPOBJ lpObj, LPSTR sLogType)
 				lpObj->pChaosBox[n].m_SocketOption[2],
 				lpObj->pChaosBox[n].m_SocketOption[3],
 				lpObj->pChaosBox[n].m_SocketOption[4]);
+#endif
 		}
 	}
 }
@@ -1071,7 +1198,12 @@ BOOL CMixSystem::PlusItemLevelChaosMix(LPOBJ lpObj, int mixType)
 	{
 		PMSG_CHAOSMIXRESULT pResult;
 		PHeadSetB((LPBYTE)&pResult, 0x86, sizeof(pResult));
+
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[PlusItemLevel] [%s][%s] CBMix Charm of luck over 10% (%d)", lpObj->AccountID, lpObj->Name, iCharmOfLuckCount);	
+#else
 		LogAddTD("[PlusItemLevel] [%s][%s] CBMix Charm of luck over 10% (%d)", lpObj->AccountID, lpObj->Name, iCharmOfLuckCount);
+#endif
 		pResult.Result = 0xF0;
 		DataSend(lpObj->m_Index, (LPBYTE)&pResult, pResult.h.size);
 		lpObj->ChaosLock = FALSE;
@@ -1156,7 +1288,11 @@ BOOL CMixSystem::PlusItemLevelChaosMix(LPOBJ lpObj, int mixType)
 	pMsg.Result = CB_ERROR;
 	lpObj->ChaosLock = TRUE;
 	this->LogPlusItemLevelChaosItem(lpObj, MixType);
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[PlusItemLevel] Chaos Mix Start");
+#else
 	LogAddTD("[PlusItemLevel] Chaos Mix Start");
+#endif
 
 	int iChaosTaxMoney = (int)((__int64)lpObj->ChaosMoney * (__int64)g_CastleSiegeSync.GetTaxRateChaos(lpObj->m_Index) / (__int64)100);
 
@@ -1174,7 +1310,11 @@ BOOL CMixSystem::PlusItemLevelChaosMix(LPOBJ lpObj, int mixType)
 
 	if ( lpObj->Money < lpObj->ChaosMoney )
 	{
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[PlusItemLevel] [%s][%s] CBMix Not Enough Money [%d] need zen [%d]", lpObj->AccountID, lpObj->Name, lpObj->Money, lpObj->ChaosMoney);
+#else
 		LogAddTD("[PlusItemLevel] [%s][%s] CBMix Not Enough Money [%d] need zen [%d]", lpObj->AccountID, lpObj->Name, lpObj->Money, lpObj->ChaosMoney);
+#endif
 		pMsg.Result = CB_NOT_ENOUGH_ZEN;
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 		lpObj->ChaosLock = FALSE;
@@ -1373,15 +1513,27 @@ BOOL CMixSystem::PlusItemLevelChaosMix(LPOBJ lpObj, int mixType)
 
 		if ( btItemLuckValue )
 		{
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[PlusItemLevel] [%s][%s] CBMix Success %d Money : %d-%d [%d], CharmRate : %d",
+				lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate+5, lpObj->Money,
+				lpObj->ChaosMoney, Item.m_Level, iCharmOfLuckCount);
+#else
 			LogAddTD("[PlusItemLevel] [%s][%s] CBMix Success %d Money : %d-%d [%d], CharmRate : %d",
 				lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate+5, lpObj->Money,
 				lpObj->ChaosMoney, Item.m_Level, iCharmOfLuckCount);
+#endif
 		}
 		else
 		{
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[PlusItemLevel] [%s][%s] CBMix Success %d Money : %d-%d [%d], CharmRate : %d",
+				lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money,
+				lpObj->ChaosMoney, Item.m_Level, iCharmOfLuckCount);
+#else
 			LogAddTD("[PlusItemLevel] [%s][%s] CBMix Success %d Money : %d-%d [%d], CharmRate : %d",
 				lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money,
 				lpObj->ChaosMoney, Item.m_Level, iCharmOfLuckCount);
+#endif
 		}
 	}
 	else
@@ -1403,15 +1555,27 @@ BOOL CMixSystem::PlusItemLevelChaosMix(LPOBJ lpObj, int mixType)
 
 		if ( btItemLuckValue )
 		{
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[PlusItemLevel] [%s][%s] CBMix Fail %d Money : %d-%d [%d], CharmRate : %d",
+				lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate+5, lpObj->Money,
+				lpObj->ChaosMoney, FailLevel, iCharmOfLuckCount);
+#else
 			LogAddTD("[PlusItemLevel] [%s][%s] CBMix Fail %d Money : %d-%d [%d], CharmRate : %d",
 				lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate+5, lpObj->Money,
 				lpObj->ChaosMoney, FailLevel, iCharmOfLuckCount);
+#endif
 		}
 		else
 		{
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[PlusItemLevel] [%s][%s] CBMix Fail %d Money : %d-%d [%d], CharmRate : %d",
+				lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money,
+				lpObj->ChaosMoney, FailLevel, iCharmOfLuckCount);
+#else
 			LogAddTD("[PlusItemLevel] [%s][%s] CBMix Fail %d Money : %d-%d [%d], CharmRate : %d",
 				lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money,
 				lpObj->ChaosMoney, FailLevel, iCharmOfLuckCount);
+#endif
 		}
 	}
 
@@ -1532,7 +1696,11 @@ BOOL CMixSystem::PegasiaChaosMix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "DinorantMix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[DinorantMix] Chaos Mix Start");
+#else
 	LogAddTD("[DinorantMix] Chaos Mix Start");
+#endif
 	lpObj->ChaosSuccessRate = 70;
 	lpObj->ChaosSuccessRate += iCharmOfLuckCount;
 
@@ -1567,9 +1735,13 @@ BOOL CMixSystem::PegasiaChaosMix(LPOBJ lpObj)
 
 		::ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, Dinorant, 0, 255, 1, 0, Option3, -1, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
-
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[DinorantMix] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[DinorantMix] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 
 		return TRUE;
 	}
@@ -1578,9 +1750,13 @@ BOOL CMixSystem::PegasiaChaosMix(LPOBJ lpObj)
 		this->ChaosBoxInit(lpObj);	// Errase Chaos Box
 		GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
-
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[DinorantMix] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[DinorantMix] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 
 		lpObj->ChaosLock = FALSE;
 		return FALSE;
@@ -1672,7 +1848,11 @@ BOOL CMixSystem::CircleChaosMix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "CircleMix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[CircleMix] Chaos Mix Start");
+#else
 	LogAddTD("[CircleMix] Chaos Mix Start");
+#endif
 	lpObj->ChaosSuccessRate = 90;
 	lpObj->ChaosSuccessRate += iCharmOfLuckCount;
 
@@ -1719,9 +1899,13 @@ BOOL CMixSystem::CircleChaosMix(LPOBJ lpObj)
 
 		::ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, Fruit, FruitType, 255, 1, 0, 0, -1, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
-
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[CircleMix] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[CircleMix] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 
 		return TRUE;
 	}
@@ -1731,8 +1915,13 @@ BOOL CMixSystem::CircleChaosMix(LPOBJ lpObj)
 		GCUserChaosBoxSend(lpObj, 0);
 
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[CircleMix] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[CircleMix] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 		lpObj->ChaosLock = FALSE;
 
 		return FALSE;
@@ -1900,7 +2089,11 @@ BOOL CMixSystem::WingChaosMix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "WingMix,2");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[WingMix,2] Chaos Mix Start");
+#else
 	LogAddTD("[WingMix,2] Chaos Mix Start");
+#endif
 
 	if(lpObj->ChaosSuccessRate > 90)
 	{
@@ -1979,7 +2172,11 @@ BOOL CMixSystem::WingChaosMix(LPOBJ lpObj)
 				iItemSubType = 6;
 				break;
 			default:
+#ifdef SEPARATE_LOGS
+				g_ChaosBoxLog.Output("[MixSystem][WingChaosMix] WingCharmItemNum => %d , WingCharmIndex => %d", WingCharmItemNum, WingCharmIndex);
+#else
 				LogAddTD("[MixSystem][WingChaosMix] WingCharmItemNum => %d , WingCharmIndex => %d", WingCharmItemNum, WingCharmIndex);
+#endif
 			}
 		}
 
@@ -2058,7 +2255,11 @@ BOOL CMixSystem::WingChaosMix(LPOBJ lpObj)
 
 		::ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, iWingNum, iWingLevel, 0, 0, iOption1, iOption2, -1, iOption3, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[WingMix,2] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		::LogAddTD("[WingMix,2] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 		return TRUE;
 	}
 	else
@@ -2070,7 +2271,11 @@ BOOL CMixSystem::WingChaosMix(LPOBJ lpObj)
 
 		GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[WingMix,2] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		::LogAddTD("[WingMix,2] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 		lpObj->ChaosLock = FALSE;
 		return FALSE;
 	}
@@ -2227,7 +2432,11 @@ void CMixSystem::DarkHorseChaosMix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "DarkHorseMix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[DarkHorseMix] Chaos Mix Start");
+#else
 	LogAddTD("[DarkHorseMix] Chaos Mix Start");
+#endif
 	lpObj->ChaosSuccessRate = 60;
 	lpObj->ChaosSuccessRate += iCharmOfLuckCount;
 
@@ -2320,9 +2529,15 @@ void CMixSystem::DarkHorseChaosMix(LPOBJ lpObj)
 
 		::PetItemSerialCreateSend(lpObj->m_Index, -2, 0, 0, ItemNum, Level, 0,Add,  Option1, Option2, -1, 0, 0); 
 		::gObjInventoryCommit(lpObj->m_Index);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[DarkHorseMix] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
+			lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[DarkHorseMix] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
 			lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 	}
 	else
 	{
@@ -2330,9 +2545,15 @@ void CMixSystem::DarkHorseChaosMix(LPOBJ lpObj)
 		GCUserChaosBoxSend(lpObj, 1);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[DarkHorseMix] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
+			lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[DarkHorseMix] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
 			lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 		lpObj->ChaosLock = FALSE;
 	}
 }
@@ -2409,7 +2630,11 @@ void CMixSystem::DarkSpiritChaosMix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "DarkSpiritMix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[DarkSpiritMix] Chaos Mix Start");
+#else
 	LogAddTD("[DarkSpiritMix] Chaos Mix Start");
+#endif
 	lpObj->ChaosSuccessRate = 60;
 	lpObj->ChaosSuccessRate += iCharmOfLuckCount;
 
@@ -2502,9 +2727,15 @@ void CMixSystem::DarkSpiritChaosMix(LPOBJ lpObj)
 
 		::PetItemSerialCreateSend(lpObj->m_Index, -2, 0, 0, ItemNum, Level, 0, Add, Option1, Option2, -1, 0, 0); 
 		::gObjInventoryCommit(lpObj->m_Index);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[DarkSpiritMix] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
+			lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[DarkSpiritMix] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
 			lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 	}
 	else
 	{
@@ -2512,9 +2743,15 @@ void CMixSystem::DarkSpiritChaosMix(LPOBJ lpObj)
 		GCUserChaosBoxSend(lpObj, 1);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[DarkSpiritMix] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
+			lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[DarkSpiritMix] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
 			lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 		lpObj->ChaosLock = FALSE;
 	}
 }
@@ -2575,7 +2812,11 @@ void CMixSystem::BlessPotionChaosMix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "BlessPotionMix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[BlessPotionMix] Chaos Mix Start");
+#else
 	LogAddTD("[BlessPotionMix] Chaos Mix Start");
+#endif
 	lpObj->ChaosSuccessRate = 100;
 
 #ifdef __NOVUS__
@@ -2625,9 +2866,15 @@ void CMixSystem::BlessPotionChaosMix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, ItemNum, Level, Dur, 0, 0, 0, -1, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[BlessPotionMix] [%s][%s] CBMix Success %d Money : %d-%d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
+			lpObj->Money, nChaosNeedMoney);
+#else
 		LogAddTD("[BlessPotionMix] [%s][%s] CBMix Success %d Money : %d-%d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
 			lpObj->Money, nChaosNeedMoney);
+#endif
 	}
 	else
 	{
@@ -2635,9 +2882,15 @@ void CMixSystem::BlessPotionChaosMix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 1);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[BlessPotionMix] [%s][%s] CBMix Fail %d Money : %d-%d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
+			lpObj->Money, nChaosNeedMoney);
+#else
 		LogAddTD("[BlessPotionMix] [%s][%s] CBMix Fail %d Money : %d-%d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
 			lpObj->Money, nChaosNeedMoney);
+#endif
 
 		lpObj->ChaosLock = FALSE;
 	}
@@ -2688,7 +2941,11 @@ void CMixSystem::SoulPotionChaosMix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "SoulPotionMix");
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[SoulPotionMix] Chaos Mix Start");
+#else
 	LogAddTD("[SoulPotionMix] Chaos Mix Start");
+#endif
 	lpObj->ChaosSuccessRate = 100;
 
 #ifdef __NOVUS__
@@ -2738,9 +2995,15 @@ void CMixSystem::SoulPotionChaosMix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, ItemNum, Level, Dur, 0, 0, 0, -1, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
-		LogAddTD("[BlessPotionMix] [%s][%s] CBMix Success %d Money : %d-%d",	// #error Change to SoulPotionMix
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[SoulPotionMix] [%s][%s] CBMix Success %d Money : %d-%d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
 			lpObj->Money, nChaosNeedMoney);
+#else		
+		LogAddTD("[SoulPotionMix] [%s][%s] CBMix Success %d Money : %d-%d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
+			lpObj->Money, nChaosNeedMoney);
+#endif
 	}
 	else
 	{
@@ -2748,9 +3011,15 @@ void CMixSystem::SoulPotionChaosMix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 1);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[SoulPotionMix] [%s][%s] CBMix Fail %d Money : %d-%d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
+			lpObj->Money, nChaosNeedMoney);
+#else
 		LogAddTD("[SoulPotionMix] [%s][%s] CBMix Fail %d Money : %d-%d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
 			lpObj->Money, nChaosNeedMoney);
+#endif
 
 		lpObj->ChaosLock = FALSE;
 	}
@@ -2810,7 +3079,11 @@ void CMixSystem::LifeStoneChaosMix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "LifeStoneMix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[LifeStoneMix] Chaos Mix Start");
+#else
 	LogAddTD("[LifeStoneMix] Chaos Mix Start");
+#endif
 	lpObj->ChaosSuccessRate = 100;
 
 #ifdef __NOVUS__
@@ -2856,9 +3129,15 @@ void CMixSystem::LifeStoneChaosMix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, ITEMGET(13,11) , 1, 0, 0, 0, 0, -1, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[LifeStoneMix] [%s][%s] CBMix Success %d Money : %d-%d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
+			lpObj->Money, nChaosNeedMoney);
+#else
 		LogAddTD("[LifeStoneMix] [%s][%s] CBMix Success %d Money : %d-%d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
 			lpObj->Money, nChaosNeedMoney);
+#endif
 	}
 	else
 	{
@@ -2866,9 +3145,15 @@ void CMixSystem::LifeStoneChaosMix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 1);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[LifeStoneMix] [%s][%s] CBMix Fail %d Money : %d-%d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
+			lpObj->Money, nChaosNeedMoney);
+#else
 		LogAddTD("[LifeStoneMix] [%s][%s] CBMix Fail %d Money : %d-%d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
 			lpObj->Money, nChaosNeedMoney);
+#endif
 
 		lpObj->ChaosLock = FALSE;
 	}
@@ -2896,8 +3181,13 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 	{
 		if( lpObj->GuildStatus != GUILD_MASTER )
 		{
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] Item Mix Failed - No Auth( Not GuildMaster )",
+				lpObj->AccountID, lpObj->Name);
+#else			
 			LogAddTD("[CastleSpecialMix] [%s][%s] Item Mix Failed - No Auth( Not GuildMaster )",
 				lpObj->AccountID, lpObj->Name);
+#endif
 
 			DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
@@ -2908,8 +3198,13 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 	}
 	else
 	{
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] Item Mix Failed - No Auth",
+			lpObj->AccountID, lpObj->Name);
+#else		
 		LogAddTD("[CastleSpecialMix] [%s][%s] Item Mix Failed - No Auth",
 			lpObj->AccountID, lpObj->Name);
+#endif
 
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
@@ -2920,8 +3215,13 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 
 	if( g_iCastleItemMixLimit <= 0 )
 	{
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] Item Mix Failed - Mix Count Limit Over",
+			lpObj->AccountID, lpObj->Name);
+#else		
 		LogAddTD("[CastleSpecialMix] [%s][%s] Item Mix Failed - Mix Count Limit Over",
 			lpObj->AccountID, lpObj->Name);
+#endif
 
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
@@ -2955,8 +3255,13 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 
 	if( iBlessGemMixCount != 3 || iSoulGemMixCount != 3 || iDefendGemCount != 30 || iInvalidItemCount > 0 )
 	{
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] Item Mix Failed - Item Error (DG:%d, BGx10:%d, SGx10:%d, Other:%d)",
+			lpObj->AccountID, lpObj->Name, iBlessGemMixCount, iSoulGemMixCount, iDefendGemCount, iInvalidItemCount);
+#else	
 		LogAddTD("[CastleSpecialMix] [%s][%s] Item Mix Failed - Item Error (DG:%d, BGx10:%d, SGx10:%d, Other:%d)",
 			lpObj->AccountID, lpObj->Name, iBlessGemMixCount, iSoulGemMixCount, iDefendGemCount, iInvalidItemCount);
+#endif
 
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
@@ -2966,7 +3271,11 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 	}
 
 	LogChaosItem(lpObj, "Castle Special Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] Chaos Mix Start", lpObj->AccountID, lpObj->Name);
+#else
 	LogAddTD("[CastleSpecialMix] [%s][%s] Chaos Mix Start", lpObj->AccountID, lpObj->Name);
+#endif
 
 	lpObj->ChaosSuccessRate = 100;
 
@@ -2978,8 +3287,13 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 
 	if( lpObj->Money < nChaosNeedMoney )
 	{
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] Item Mix Failed - Lack of Money (%d/%d)",
+			lpObj->AccountID, lpObj->Name, lpObj->Money, nChaosNeedMoney);
+#else	
 		LogAddTD("[CastleSpecialMix] [%s][%s] Item Mix Failed - Lack of Money (%d/%d)",
 			lpObj->AccountID, lpObj->Name, lpObj->Money, nChaosNeedMoney);
+#endif
 
 		pMsg.Result = CB_NOT_ENOUGH_ZEN;
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
@@ -2999,8 +3313,13 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 	{
 		if( CastleItemMixItemBag->PickItem(objTempItem, nItemIndex) == FALSE )
 		{
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] Item Pick Failed - Data Error",
+				lpObj->AccountID, lpObj->Name);
+#else				
 			LogAddTD("[CastleSpecialMix] [%s][%s] Item Pick Failed - Data Error",
 				lpObj->AccountID, lpObj->Name);
+#endif
 
 			DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
@@ -3021,8 +3340,13 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 
 	if( bItemPickSuccess == false )
 	{
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] Item Pick Failed - Loop Count Over",
+			lpObj->AccountID, lpObj->Name);
+#else			
 		LogAddTD("[CastleSpecialMix] [%s][%s] Item Pick Failed - Loop Count Over",
 			lpObj->AccountID, lpObj->Name);
+#endif
 
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
@@ -3082,7 +3406,11 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 	{
 		ItemSerialCreateSend(lpObj->m_Index, 255, 0, 0, objTempItem.m_Type,	objTempItem.m_Level, objTempItem.m_Durability, objTempItem.m_Option1, objTempItem.m_Option2, objTempItem.m_Option3, -1, objTempItem.m_NewOption, 0);
 		gObjInventoryCommit(lpObj->m_Index);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] CBMix Success %d Money : %d-%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney);
+#else	
 		LogAddTD("[CastleSpecialMix] [%s][%s] CBMix Success %d Money : %d-%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney);
+#endif
 		g_iCastleItemMixLimit--;
 	}
 	else
@@ -3090,7 +3418,11 @@ void CMixSystem::CastleSpecialItemMix(LPOBJ lpObj) //Identical
 		this->ChaosBoxInit(lpObj);
 		GCUserChaosBoxSend(lpObj, 1);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[CastleSpecialMix] [%s][%s] CBMix Fail %d Money : %d-%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney);
+#else	
 		LogAddTD("[CastleSpecialMix] [%s][%s] CBMix Fail %d Money : %d-%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney);
+#endif
 		lpObj->ChaosLock = FALSE;
 	}
 }
@@ -3175,21 +3507,34 @@ void CMixSystem::HiddenTreasureBoxItemMix(LPOBJ lpObj)
 		}
 		else
 		{
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[Hidden TreasureBox Event] [%s][%s] Item Mix Failed",	lpObj->AccountID, lpObj->Name);
+				DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
+#else
 			LogAddTD("[Hidden TreasureBox Event] [%s][%s] Item Mix Failed",	lpObj->AccountID, lpObj->Name);
 			DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
+#endif
 			lpObj->ChaosLock = FALSE;
 		}
 	}
 	else
 	{
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Hidden TreasureBox Event] [%s][%s] Item Mix Failed",	lpObj->AccountID, lpObj->Name);
+#else
 		LogAddTD("[Hidden TreasureBox Event] [%s][%s] Item Mix Failed",	lpObj->AccountID, lpObj->Name);
+#endif
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 		lpObj->ChaosLock = FALSE;
 		return;
 	}
 
 	LogChaosItem(lpObj, "Hidden TreasureBox Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[Hidden TreasureBox Event] [%s][%s] Chaos Mix Start", lpObj->AccountID, lpObj->Name);
+#else	
 	LogAddTD("[Hidden TreasureBox Event] [%s][%s] Chaos Mix Start", lpObj->AccountID, lpObj->Name);
+#endif
 
 #ifdef __NOVUS__
 	lpObj->ChaosSuccessRate += lpObj->m_CraftLevel;
@@ -3210,19 +3555,32 @@ void CMixSystem::HiddenTreasureBoxItemMix(LPOBJ lpObj)
 			ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, ITEMGET(12,26) , 5, 1, 0, 0, 0, -1, 0, 0);
 			break;
 		default:
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Hidden TreasureBox Event] [%s][%s] CBMix Failed - iCrystalMixType is wrong : %d",
+				lpObj->AccountID, lpObj->Name, iCrystalMixType);
+#else
 			LogAddTD("[Hidden TreasureBox Event] [%s][%s] CBMix Failed - iCrystalMixType is wrong : %d",
 				lpObj->AccountID, lpObj->Name, iCrystalMixType);
+#endif
 			DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 			lpObj->ChaosLock = FALSE;
 			return;
 		}
 
 		::gObjInventoryCommit(lpObj->m_Index);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Hidden TreasureBox Event] [%s][%s] CBMix Success:%d Type:%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, iCrystalMixType);
+#else
 		LogAddTD("[Hidden TreasureBox Event] [%s][%s] CBMix Success:%d Type:%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, iCrystalMixType);
+#endif
 	}
 	else
 	{
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Hidden TreasureBox Event] [%s][%s] CBMix Fail Rate:%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate);
+#else
 		LogAddTD("[Hidden TreasureBox Event] [%s][%s] CBMix Fail Rate:%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate);
+#endif
 		this->ChaosBoxInit(lpObj);
 		::GCUserChaosBoxSend(lpObj, 1);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
@@ -3293,7 +3651,11 @@ void CMixSystem::Fenrir_01Level_Mix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "Fenrir_01Level_Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[Fenrir Mix][Level 01] Chaos Mix Start");
+#else
 	LogAddTD("[Fenrir Mix][Level 01] Chaos Mix Start");
+#endif
 
 	lpObj->ChaosSuccessRate = g_iFenrir_01Level_MixRate;
 	lpObj->ChaosSuccessRate += iCharmOfLuckCount;
@@ -3344,7 +3706,11 @@ void CMixSystem::Fenrir_01Level_Mix(LPOBJ lpObj)
 
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, type , level, dur, 0, 0, 0, -1, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Fenrir Mix][Level 01] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[Fenrir Mix][Level 01] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 
 	}
 	else
@@ -3352,7 +3718,11 @@ void CMixSystem::Fenrir_01Level_Mix(LPOBJ lpObj)
 		this->ChaosBoxInit(lpObj);
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Fenrir Mix][Level 01] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#else
 		LogAddTD("[Fenrir Mix][Level 01] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney, iCharmOfLuckCount);
+#endif
 		lpObj->ChaosLock = FALSE;
 	}
 }
@@ -3420,7 +3790,11 @@ void CMixSystem::Fenrir_02Level_Mix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "Fenrir_02Level_Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[Fenrir Mix][Level 02] Chaos Mix Start");
+#else
 	LogAddTD("[Fenrir Mix][Level 02] Chaos Mix Start");
+#endif
 
 	lpObj->ChaosSuccessRate = g_iFenrir_02Level_MixRate;
 	lpObj->ChaosSuccessRate += iCharmOfLuckCount;
@@ -3467,9 +3841,15 @@ void CMixSystem::Fenrir_02Level_Mix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, type , level, dur, 0, 0, 0, -1, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Fenrir Mix][Level 02] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
+			iCharmOfLuckCount);
+#else
 		LogAddTD("[Fenrir Mix][Level 02] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
 			iCharmOfLuckCount);
+#endif
 
 	}
 	else
@@ -3478,9 +3858,15 @@ void CMixSystem::Fenrir_02Level_Mix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Fenrir Mix][Level 02] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
+			iCharmOfLuckCount);
+#else
 		LogAddTD("[Fenrir Mix][Level 02] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
 			iCharmOfLuckCount);
+#endif
 
 		lpObj->ChaosLock = FALSE;
 	}
@@ -3549,7 +3935,11 @@ void CMixSystem::Fenrir_03Level_Mix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "Fenrir_03Level_Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[Fenrir Mix][Level 03] Chaos Mix Start");
+#else
 	LogAddTD("[Fenrir Mix][Level 03] Chaos Mix Start");
+#endif
 
 	lpObj->ChaosSuccessRate = g_iFenrir_03Level_MixRate;
 	lpObj->ChaosSuccessRate += iCharmOfLuckCount;
@@ -3602,9 +3992,15 @@ void CMixSystem::Fenrir_03Level_Mix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, type , level, dur, op1, 0, 0, -1, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
-		LogAddTD("[Fenrir Mix][Level 03] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[Fenrir Mix][Level 03] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
 			iCharmOfLuckCount);
+#else
+	LogAddTD("[Fenrir Mix][Level 03] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
+			iCharmOfLuckCount);
+#endif
 
 	}
 	else
@@ -3613,9 +4009,15 @@ void CMixSystem::Fenrir_03Level_Mix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
-		LogAddTD("[Fenrir Mix][Level 03] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[Fenrir Mix][Level 03] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
 			iCharmOfLuckCount);
+#else
+	LogAddTD("[Fenrir Mix][Level 03] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
+			iCharmOfLuckCount);
+#endif
 
 		lpObj->ChaosLock = FALSE;
 	}
@@ -3734,7 +4136,11 @@ void CMixSystem::Fenrir_04Upgrade_Mix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "Fenrir_04Level_Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[Fenrir Mix][Level 04] Chaos Mix Start");
+#else
 	LogAddTD("[Fenrir Mix][Level 04] Chaos Mix Start");
+#endif
 
 	int nChaosNeedMoney = 10000000;
 
@@ -3808,9 +4214,15 @@ void CMixSystem::Fenrir_04Upgrade_Mix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, type , level, dur, op1, 0, 0, -1, nop, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Fenrir Mix][Level 04] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
+			iCharmOfLuckCount);
+#else
 		LogAddTD("[Fenrir Mix][Level 04] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
 			iCharmOfLuckCount);
+#endif
 
 	}
 	else
@@ -3819,9 +4231,15 @@ void CMixSystem::Fenrir_04Upgrade_Mix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[Fenrir Mix][Level 04] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
+			iCharmOfLuckCount);
+#else
 		LogAddTD("[Fenrir Mix][Level 04] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, nChaosNeedMoney,
 			iCharmOfLuckCount);
+#endif
 
 		lpObj->ChaosLock = FALSE;
 	}
@@ -3910,7 +4328,11 @@ void CMixSystem::ShieldPotionLv1_Mix(LPOBJ lpObj)
 	GCMoneySend(lpObj->m_Index, lpObj->Money);
 
 	LogChaosItem(lpObj, "PotionMix][ShieldPotion Lv1 Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[PotionMix][ShieldPotion Lv1 Mix] - Mix Start");
+#else
 	LogAddTD("[PotionMix][ShieldPotion Lv1 Mix] - Mix Start");
+#endif
 
 	int iRate = rand() % 100;
 	iRate -= iCharmOfLuckCount;
@@ -3922,8 +4344,13 @@ void CMixSystem::ShieldPotionLv1_Mix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, ItemNum, 0, 1, 0, 0, 0, lpObj->m_Index, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[ChaosMix][Shield Potion] Lv1 Potion Mix Success [%s][%s], Money(%d-%d), CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, 	lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#else
 		LogAddTD("[ChaosMix][Shield Potion] Lv1 Potion Mix Success [%s][%s], Money(%d-%d), CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, 	lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#endif
 	}
 	else
 	{
@@ -3931,9 +4358,15 @@ void CMixSystem::ShieldPotionLv1_Mix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[ChaosMix][Shield Potion] Lv1 Potion Mix [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, 	g_iShieldPotionLv1MixSuccessRate,
+			lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#else
 		LogAddTD("[ChaosMix][Shield Potion] Lv1 Potion Mix [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, 	g_iShieldPotionLv1MixSuccessRate,
 			lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#endif
 	}
 
 	lpObj->ChaosLock = FALSE;
@@ -4018,7 +4451,11 @@ void CMixSystem::ShieldPotionLv2_Mix(LPOBJ lpObj)
 	g_CastleSiegeSync.AddTributeMoney(iChaosTaxMoney);
 
 	LogChaosItem(lpObj, "PotionMix][ShieldPotion Lv2 Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[PotionMix][ShieldPotion Lv2 Mix] - Mix Start");
+#else
 	LogAddTD("[PotionMix][ShieldPotion Lv2 Mix] - Mix Start");
+#endif
 
 	GCMoneySend(lpObj->m_Index, lpObj->Money);
 	int iRate = rand() % 100;
@@ -4031,8 +4468,13 @@ void CMixSystem::ShieldPotionLv2_Mix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, ItemNum, 0, 1, 0, 0, 0, lpObj->m_Index, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[ChaosMix][Shield Potion] Lv2 Potion Mix Success [%s][%s], Money(%d-%d), CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, 	lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#else		
 		LogAddTD("[ChaosMix][Shield Potion] Lv2 Potion Mix Success [%s][%s], Money(%d-%d), CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, 	lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#endif
 	}
 	else
 	{
@@ -4040,9 +4482,15 @@ void CMixSystem::ShieldPotionLv2_Mix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[ChaosMix][Shield Potion] Lv2 Potion Mix [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, 	g_iShieldPotionLv2MixSuccessRate,
+			lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#else
 		LogAddTD("[ChaosMix][Shield Potion] Lv2 Potion Mix [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, 	g_iShieldPotionLv2MixSuccessRate,
 			lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#endif
 	}
 
 	lpObj->ChaosLock = FALSE;
@@ -4128,7 +4576,11 @@ void CMixSystem::ShieldPotionLv3_Mix(LPOBJ lpObj)
 	GCMoneySend(lpObj->m_Index, lpObj->Money);
 
 	LogChaosItem(lpObj, "PotionMix][ShieldPotion Lv3 Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[PotionMix][ShieldPotion Lv3 Mix] - Mix Start");
+#else
 	LogAddTD("[PotionMix][ShieldPotion Lv3 Mix] - Mix Start");
+#endif
 
 	int iRate = rand() % 100;
 	iRate -= iCharmOfLuckCount;
@@ -4140,8 +4592,13 @@ void CMixSystem::ShieldPotionLv3_Mix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, ItemNum, 0, 1, 0, 0, 0, lpObj->m_Index, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[ChaosMix][Shield Potion] Lv3 Potion Mix Success [%s][%s], Money(%d-%d), CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, 	lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#else
 		LogAddTD("[ChaosMix][Shield Potion] Lv3 Potion Mix Success [%s][%s], Money(%d-%d), CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, 	lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#endif
 	}
 	else
 	{
@@ -4149,9 +4606,15 @@ void CMixSystem::ShieldPotionLv3_Mix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[ChaosMix][Shield Potion] Lv3 Potion Mix [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, 	g_iShieldPotionLv3MixSuccessRate,
+			lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#else		
 		LogAddTD("[ChaosMix][Shield Potion] Lv3 Potion Mix [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, 	g_iShieldPotionLv3MixSuccessRate,
 			lpObj->Money, iChaosMixPrice, iCharmOfLuckCount);
+#endif
 	}
 
 	lpObj->ChaosLock = FALSE;
@@ -4318,7 +4781,11 @@ void CMixSystem::ThirdWingLevel1_Mix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "ThirdWingLevel1_Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[ThirdWing Mix][Level 01] Chaos Mix Start");
+#else
 	LogAddTD("[ThirdWing Mix][Level 01] Chaos Mix Start");
+#endif
 
 	if(loc8 > 0)
 	{
@@ -4386,8 +4853,13 @@ void CMixSystem::ThirdWingLevel1_Mix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, type , level, dur, 0, 0, 0, -1, 0, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[ThirdWing Mix][Level 01] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,	lpObj->Money, loc9, loc10);
+#else
 		LogAddTD("[ThirdWing Mix][Level 01] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,	lpObj->Money, loc9, loc10);
+#endif
 	}
 	else
 	{
@@ -4395,8 +4867,13 @@ void CMixSystem::ThirdWingLevel1_Mix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[ThirdWing Mix][Level 01] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,	lpObj->Money, loc9, loc10);
+#else
 		LogAddTD("[ThirdWing Mix][Level 01] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,	lpObj->Money, loc9, loc10);
+#endif
 		lpObj->ChaosLock = FALSE;
 	}
 }
@@ -4485,7 +4962,11 @@ void CMixSystem::ThirdWingLevel2_Mix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "ThirdWingLevel2_Mix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[ThirdWing Mix][Level 02] Chaos Mix Start");
+#else
 	LogAddTD("[ThirdWing Mix][Level 02] Chaos Mix Start");
+#endif
 
 	if(loc10 > 0)
 	{
@@ -4691,8 +5172,13 @@ void CMixSystem::ThirdWingLevel2_Mix(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, loc19 , 0, 0, loc20, loc21, loc22, -1, loc23, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[ThirdWing Mix][Level 02] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,	lpObj->Money, loc11, loc12);
+#else
 		LogAddTD("[ThirdWing Mix][Level 02] [%s][%s] CBMix Success %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,	lpObj->Money, loc11, loc12);
+#endif
 	}
 	else
 	{
@@ -4700,8 +5186,13 @@ void CMixSystem::ThirdWingLevel2_Mix(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[ThirdWing Mix][Level 02] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,	lpObj->Money, loc11, loc12);
+#else		
 		LogAddTD("[ThirdWing Mix][Level 02] [%s][%s] CBMix Fail %d Money : %d-%d, CharmRate : %d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,	lpObj->Money, loc11, loc12);
+#endif
 		lpObj->ChaosLock = FALSE;
 	}
 }
@@ -4855,8 +5346,11 @@ void CMixSystem::SetItemChaosMix(LPOBJ lpObj)
 	}
 
 	LogChaosItem(lpObj, "SetItemMix");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[SetItemMix] Chaos Mix Start");
+#else
 	LogAddTD("[SetItemMix] Chaos Mix Start");
-
+#endif
 	if ( gSetItemOption.CheckMixContition(lpObj->pChaosBox[MixSetItemIndex].m_Type, iMetalOfAncientItemLevel ) == FALSE )
 	{
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
@@ -4943,8 +5437,13 @@ void CMixSystem::SetItemChaosMix(LPOBJ lpObj)
 
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[SetItemMix] [%s][%s] CBMix Success %d Money : %d-%d (SetName:%s)", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
+			lpObj->Money, lpObj->ChaosMoney, gSetItemOption.GetSetOptionName(lpObj->pChaosBox[MixSetItemIndex].m_Type, setoption));
+#else
 		LogAddTD("[SetItemMix] [%s][%s] CBMix Success %d Money : %d-%d (SetName:%s)", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate,
 			lpObj->Money, lpObj->ChaosMoney, gSetItemOption.GetSetOptionName(lpObj->pChaosBox[MixSetItemIndex].m_Type, setoption));
+#endif
 	}
 	else
 	{
@@ -4953,9 +5452,15 @@ void CMixSystem::SetItemChaosMix(LPOBJ lpObj)
 
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[SetItemMix] [%s][%s] CBMix Fail %d Money : %d-%d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money,
+			nChaosNeedMoney);
+#else
 		LogAddTD("[SetItemMix] [%s][%s] CBMix Fail %d Money : %d-%d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money,
 			nChaosNeedMoney);
+#endif
 
 		lpObj->ChaosLock = FALSE;
 	}
@@ -5087,7 +5592,11 @@ void CMixSystem::ChaosCardMix(LPOBJ lpObj)
 	{
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 		lpObj->ChaosLock = FALSE;
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[ChaosMix][ChaosCardMix] Lottery Item Mix Failed. Can't Get Item from List.");
+#else	
 		LogAddTD("[ChaosMix][ChaosCardMix] Lottery Item Mix Failed. Can't Get Item from List.");
+#endif
 
 		return;
 	}
@@ -5096,17 +5605,29 @@ void CMixSystem::ChaosCardMix(LPOBJ lpObj)
 
 	gObjInventoryCommit(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[ChaosMix][ChaosCardMix] Chaos Card Item Mix Success [%s][%s]", lpObj->AccountID, lpObj->Name);
+#else	
 	LogAddTD("[ChaosMix][ChaosCardMix] Chaos Card Item Mix Success [%s][%s]", lpObj->AccountID, lpObj->Name);
+#endif
 
 	BYTE btExOption[MAX_EXOPTION_SIZE];
 
 	ItemIsBufExOption(btExOption, &LotteryItem);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[CashShop][ChaosCardMix] - User(ID:%s,Name:%s) Item(Name:%s,Type:%d,Level:%d,Dur:%d,Skill:%d,Luck:%d,AddOption:%d,Ex:(%d,%d,%d,%d,%d,%d))",
+		lpObj->AccountID, lpObj->Name, ItemAttribute[LotteryItem.m_Type].Name,
+		LotteryItem.m_Type, LotteryItem.m_Level, (int)LotteryItem.m_Durability,
+		LotteryItem.m_Option1, LotteryItem.m_Option2, LotteryItem.m_Option3,
+		btExOption[0], btExOption[1], btExOption[2], btExOption[3], btExOption[4], btExOption[5]);
+#else
 	LogAddTD("[CashShop][ChaosCardMix] - User(ID:%s,Name:%s) Item(Name:%s,Type:%d,Level:%d,Dur:%d,Skill:%d,Luck:%d,AddOption:%d,Ex:(%d,%d,%d,%d,%d,%d))",
 		lpObj->AccountID, lpObj->Name, ItemAttribute[LotteryItem.m_Type].Name,
 		LotteryItem.m_Type, LotteryItem.m_Level, (int)LotteryItem.m_Durability,
 		LotteryItem.m_Option1, LotteryItem.m_Option2, LotteryItem.m_Option3,
 		btExOption[0], btExOption[1], btExOption[2], btExOption[3], btExOption[4], btExOption[5]);
+#endif
 }
 // -------------------------------------------------------------------------------
 
@@ -5220,13 +5741,21 @@ void CMixSystem::CherryBlossomMix(LPOBJ lpObj)
 
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s][%s] CherryBlossomMix Fail %d Money : %d-%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, lpObj->ChaosMoney);
+#else
 		LogAddTD("[%s][%s] CherryBlossomMix Fail %d Money : %d-%d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->Money, lpObj->ChaosMoney);
+#endif
 		lpObj->ChaosLock = FALSE;
 	}
 	else
 	{
 		//season4.5 add-on start
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s][%s] CherryBlossomMix Success Rate:%d Money : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->ChaosMoney);
+#else
 		LogAddTD("[%s][%s] CherryBlossomMix Success Rate:%d Money : %d", lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, lpObj->ChaosMoney);
+#endif
 
 		if(iDropZen > 0)
 		{
@@ -5245,7 +5774,11 @@ void CMixSystem::CherryBlossomMix(LPOBJ lpObj)
 
 			pMsg.Result = 0xF1;
 			DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
-			LogAddTD("[%s] Overflow Zen [%s][%s] [%d/%d User Zen/Zen]", "CherryBlossomMix", lpObj->AccountID, lpObj->Name, lpObj->Money, iDropZen);		
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s] Overflow Zen [%s][%s] [%d/%d User Zen/Zen]", "CherryBlossomMix", lpObj->AccountID, lpObj->Name, lpObj->Money, iDropZen);	
+#else
+		LogAddTD("[%s] Overflow Zen [%s][%s] [%d/%d User Zen/Zen]", "CherryBlossomMix", lpObj->AccountID, lpObj->Name, lpObj->Money, iDropZen);	
+#endif
 		}
 		//season4.5 add-on end
 
@@ -5373,7 +5906,11 @@ void CMixSystem::MixExtractSeed(LPOBJ lpObj) //0062A5B0 identical
 		GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 		lpObj->ChaosLock = FALSE;
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s][%s] Seed Extract Mix Failed.", lpObj->AccountID, lpObj->Name);
+#else
 		LogAddTD("[%s][%s] Seed Extract Mix Failed.", lpObj->AccountID, lpObj->Name);
+#endif
 		return;
 	}
 
@@ -5386,8 +5923,13 @@ void CMixSystem::MixExtractSeed(LPOBJ lpObj) //0062A5B0 identical
 		pMsg.Result = 1;
 		ItemSerialCreateSend(lpObj->m_Index, 0xFF, 0, 0, lpSeedData->m_ItemCode, lpSeedData->m_ItemLevel, 1, 0, 0, 0, lpObj->m_Index, 0, 0);
 		gObjInventoryCommit(lpObj->m_Index);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s][%s] Seed Extract Mix Success - SeedInfo ( Index : %d, Type : %d, Level : %d, ItemCode : %d )",
+			lpObj->AccountID, lpObj->Name, lpSeedData->m_SeedIndex, lpSeedData->m_SeedType, lpSeedData->m_ItemLevel, lpSeedData->m_ItemCode);
+#else
 		LogAddTD("[%s][%s] Seed Extract Mix Success - SeedInfo ( Index : %d, Type : %d, Level : %d, ItemCode : %d )",
 			lpObj->AccountID, lpObj->Name, lpSeedData->m_SeedIndex, lpSeedData->m_SeedType, lpSeedData->m_ItemLevel, lpSeedData->m_ItemCode);
+#endif
 	}
 	else
 	{
@@ -5397,7 +5939,11 @@ void CMixSystem::MixExtractSeed(LPOBJ lpObj) //0062A5B0 identical
 		lpObj->pChaosBox[iChoasGemItemNum].Clear();
 		lpObj->pChaosBox[iCreationItemNum].Clear();
 		GCUserChaosBoxSend(lpObj, 0);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s][%s] Seed Extract Mix Failed - SeedData is NULL", lpObj->AccountID, lpObj->Name);
+#else
 		LogAddTD("[%s][%s] Seed Extract Mix Failed - SeedData is NULL", lpObj->AccountID, lpObj->Name);
+#endif
 		lpObj->ChaosLock = FALSE;
 	}
 }
@@ -5503,7 +6049,11 @@ void CMixSystem::MixCompositeSeedSphere(LPOBJ lpObj)
 	{
 		this->ChaosBoxInit(lpObj);
 		GCUserChaosBoxSend(lpObj, 0);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s][%s] SeedSphere Composite Mix Failed.", lpObj->AccountID, lpObj->Name);
+#else
 		LogAddTD("[%s][%s] SeedSphere Composite Mix Failed.", lpObj->AccountID, lpObj->Name);
+#endif
 	}
 	else
 	{
@@ -5521,14 +6071,23 @@ void CMixSystem::MixCompositeSeedSphere(LPOBJ lpObj)
 			pMsg.Result = 1;
 			ItemSerialCreateSend(lpObj->m_Index, 0xFF, 0, 0, SeedSphereItem.m_ItemCode, SeedSphereItem.m_ItemLevel, 1, 0, 0, 0, lpObj->m_Index, 0, 0);
 			gObjInventoryCommit(lpObj->m_Index);
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog.Output("[%s][%s] SeedSphere Composite Mix Success - SeedSphere Info ( Index : %d, Type : %d, Level : %d, ItemCode : %d )",
+				lpObj->AccountID, lpObj->Name, SeedSphereItem.m_SeedSphereIndex, SeedSphereItem.m_SeedType, SeedSphereItem.m_SphereLevel, SeedSphereItem.m_ItemCode);
+#else
 			LogAddTD("[%s][%s] SeedSphere Composite Mix Success - SeedSphere Info ( Index : %d, Type : %d, Level : %d, ItemCode : %d )",
 				lpObj->AccountID, lpObj->Name, SeedSphereItem.m_SeedSphereIndex, SeedSphereItem.m_SeedType, SeedSphereItem.m_SphereLevel, SeedSphereItem.m_ItemCode);
+#endif
 			return;
 		}
 
 		this->ChaosBoxInit(lpObj);
 		GCUserChaosBoxSend(lpObj, 0);
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s][%s] SeedSphere Composite Mix Failed - SeedSphere Data is NULL", lpObj->AccountID, lpObj->Name);
+#else
 		LogAddTD("[%s][%s] SeedSphere Composite Mix Failed - SeedSphere Data is NULL", lpObj->AccountID, lpObj->Name);
+#endif
 	}
 	lpObj->ChaosLock = FALSE;
 }
@@ -5645,7 +6204,11 @@ void CMixSystem::MixSetSeedSphere(LPOBJ lpObj, BYTE SocketSlot) //0062B4A0 ident
 		pMsg.Result = 7;
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 		lpObj->ChaosLock = FALSE;
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s][%s] Set Seed Mix Failed - SeedSphere is NULL", lpObj->AccountID, lpObj->Name);
+#else
 		LogAddTD("[%s][%s] Set Seed Mix Failed - SeedSphere is NULL", lpObj->AccountID, lpObj->Name);
+#endif
 		return;
 	}
 
@@ -5654,7 +6217,11 @@ void CMixSystem::MixSetSeedSphere(LPOBJ lpObj, BYTE SocketSlot) //0062B4A0 ident
 		pMsg.Result = 7;
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 		lpObj->ChaosLock = FALSE;
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[%s][%s] Set Seed Mix Failed - Wrong Item Type for Set Socket", lpObj->AccountID, lpObj->Name);
+#else
 		LogAddTD("[%s][%s] Set Seed Mix Failed - Wrong Item Type for Set Socket", lpObj->AccountID, lpObj->Name);
+#endif
 		return;
 	}
 
@@ -5682,9 +6249,15 @@ void CMixSystem::MixSetSeedSphere(LPOBJ lpObj, BYTE SocketSlot) //0062B4A0 ident
 	gObjChaosItemSet(lpObj->m_Index, 0, 1);
 	GCUserChaosBoxSend(lpObj, 0);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[%s][%s] Set SeedSphere Mix Success - ItemInfo ( Name : %s, ItemCode : %d, Level : %d, SocketOption[%d,%d,%d,%d,%d], BonusOption : %d )",
+		lpObj->AccountID, lpObj->Name, ItemAttribute[Item.m_Type].Name, Item.m_Type, Item.m_Level, Item.m_SocketOption[0], Item.m_SocketOption[1],
+		Item.m_SocketOption[2], Item.m_SocketOption[3], Item.m_SocketOption[4], Item.m_BonusSocketOption);
+#else
 	LogAddTD("[%s][%s] Set SeedSphere Mix Success - ItemInfo ( Name : %s, ItemCode : %d, Level : %d, SocketOption[%d,%d,%d,%d,%d], BonusOption : %d )",
 		lpObj->AccountID, lpObj->Name, ItemAttribute[Item.m_Type].Name, Item.m_Type, Item.m_Level, Item.m_SocketOption[0], Item.m_SocketOption[1],
 		Item.m_SocketOption[2], Item.m_SocketOption[3], Item.m_SocketOption[4], Item.m_BonusSocketOption);
+#endif
 
 	DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 }
@@ -5783,10 +6356,17 @@ void CMixSystem::MixRemoveSeedSphere(LPOBJ lpObj, BYTE SocketSlot)
 	gObjInventoryCommit(lpObj->m_Index);
 	GCUserChaosBoxSend(lpObj, 0);
 
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[%s][%s] SeedSphere Remove Success - ItemInfo ( Name : %s, ItemCode : %d, Level : %d, SocketOption[%d,%d,%d,%d,%d], BonusOption : %d )",
+		lpObj->AccountID, lpObj->Name, ItemAttribute[lpObj->pChaosBox[iSocketItemNum].m_Type].Name, lpObj->pChaosBox[iSocketItemNum].m_Type, 
+		lpObj->pChaosBox[iSocketItemNum].m_Level, lpObj->pChaosBox[iSocketItemNum].m_SocketOption[0], lpObj->pChaosBox[iSocketItemNum].m_SocketOption[1],
+		lpObj->pChaosBox[iSocketItemNum].m_SocketOption[2], lpObj->pChaosBox[iSocketItemNum].m_SocketOption[3], lpObj->pChaosBox[iSocketItemNum].m_SocketOption[4], lpObj->pChaosBox[iSocketItemNum].m_BonusSocketOption);
+#else
 	LogAddTD("[%s][%s] SeedSphere Remove Success - ItemInfo ( Name : %s, ItemCode : %d, Level : %d, SocketOption[%d,%d,%d,%d,%d], BonusOption : %d )",
 		lpObj->AccountID, lpObj->Name, ItemAttribute[lpObj->pChaosBox[iSocketItemNum].m_Type].Name, lpObj->pChaosBox[iSocketItemNum].m_Type, 
 		lpObj->pChaosBox[iSocketItemNum].m_Level, lpObj->pChaosBox[iSocketItemNum].m_SocketOption[0], lpObj->pChaosBox[iSocketItemNum].m_SocketOption[1],
 		lpObj->pChaosBox[iSocketItemNum].m_SocketOption[2], lpObj->pChaosBox[iSocketItemNum].m_SocketOption[3], lpObj->pChaosBox[iSocketItemNum].m_SocketOption[4], lpObj->pChaosBox[iSocketItemNum].m_BonusSocketOption);
+#endif
 
 	DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 }
@@ -6027,7 +6607,11 @@ void CMixSystem::NewWingsMix_Part1(LPOBJ lpObj)
 	}
 	// ----
 	LogChaosItem(lpObj, "4th Wings Mix [1]");
+#ifdef SEPARATE_LOGS
+	g_ChaosBoxLog.Output("[4thWingsMix] Chaos Mix Start");
+#else
 	LogAddTD("[4thWingsMix] Chaos Mix Start");
+#endif
 	// ----
 	lpObj->ChaosSuccessRate = GetPrivateProfileInt("ChaosMix", "SuccessRate", 80, "..\\Data\\Custom\\CustomWings.cfg");
 	int iChaosTaxMoney		= (int)((__int64)MixMoney * (__int64)g_CastleSiegeSync.GetTaxRateChaos(lpObj->m_Index) / (__int64)100);
@@ -6118,9 +6702,15 @@ void CMixSystem::NewWingsMix_Part1(LPOBJ lpObj)
 		ItemSerialCreateSend(lpObj->m_Index, -1, 0, 0, WingsType, 0, 0, 0, WingsLuck, WingsOption, -1, WingsExcellent, 0);
 		::gObjInventoryCommit(lpObj->m_Index);
 		// ----
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[4thWingsMix] [%s][%s] CBMix Success %d Money : %d-%d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
+			lpObj->Money, MixMoney);
+#else
 		LogAddTD("[4thWingsMix] [%s][%s] CBMix Success %d Money : %d-%d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
 			lpObj->Money, MixMoney);
+#endif
 	}
 	else
 	{
@@ -6128,9 +6718,15 @@ void CMixSystem::NewWingsMix_Part1(LPOBJ lpObj)
 		::GCUserChaosBoxSend(lpObj, 0);
 		DataSend(lpObj->m_Index, (LPBYTE)&pMsg, pMsg.h.size);
 		// ----
+#ifdef SEPARATE_LOGS
+		g_ChaosBoxLog.Output("[4thWingsMix] [%s][%s] CBMix Fail %d Money : %d-%d",
+			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
+			lpObj->Money, MixMoney);
+#else
 		LogAddTD("[4thWingsMix] [%s][%s] CBMix Fail %d Money : %d-%d",
 			lpObj->AccountID, lpObj->Name, lpObj->ChaosSuccessRate, 
 			lpObj->Money, MixMoney);
+#endif
 		// ----
 		lpObj->ChaosLock = FALSE;
 	}

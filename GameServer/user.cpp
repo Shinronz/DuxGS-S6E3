@@ -141,6 +141,11 @@ int gObjCSFlag;
 #include "ChaosCastle.h"
 #include "..\include\readscript.h"
 
+#ifdef SEPARATE_LOGS
+CLogToFile g_TradeLog1("Trade", ".\\LOG\\Trade", TRUE);
+CLogToFile g_PlayerItemLog1("PlayerItem", ".\\LOG\\PlayerItem", TRUE);
+#endif
+
 CViewportGuild ViewGuildMng;
 
 int gObjCount;
@@ -3178,6 +3183,19 @@ void gObjItemTextSave(LPOBJ lpObj)
 			//if ( lpObj->pInventory[n].m_serial != 0 ) //Season 2.5 removed
 			{
 				ItemIsBufExOption(NewOption, &lpObj->pInventory[n]);
+#ifdef SEPARATE_LOGS
+				g_PlayerItemLog1.Output(lMsg.Get(MSGGET(1, 248)), lpObj->AccountID, lpObj->Name, n, lpObj->pInventory[n].GetName(),
+					lpObj->pInventory[n].m_Level, lpObj->pInventory[n].m_Option1,
+					lpObj->pInventory[n].m_Option2, lpObj->pInventory[n].m_Option3,
+					lpObj->pInventory[n].m_Number, (BYTE)lpObj->pInventory[n].m_Durability,
+					NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4], NewOption[5], NewOption[6],
+					lpObj->pInventory[n].m_SetOption,lpObj->pInventory[n].m_ItemOptionEx >> 7,
+					g_kJewelOfHarmonySystem.GetItemStrengthenOption(&lpObj->pInventory[n]),
+					//season4 add-on
+					lpObj->pInventory[n].m_SocketOption[0], lpObj->pInventory[n].m_SocketOption[1],
+					lpObj->pInventory[n].m_SocketOption[2], lpObj->pInventory[n].m_SocketOption[3],
+					lpObj->pInventory[n].m_SocketOption[4], lpObj->pInventory[n].m_BonusSocketOption);
+#else
 				LogAddTD(lMsg.Get(MSGGET(1, 248)), lpObj->AccountID, lpObj->Name, n, lpObj->pInventory[n].GetName(),
 					lpObj->pInventory[n].m_Level, lpObj->pInventory[n].m_Option1,
 					lpObj->pInventory[n].m_Option2, lpObj->pInventory[n].m_Option3,
@@ -3189,11 +3207,16 @@ void gObjItemTextSave(LPOBJ lpObj)
 					lpObj->pInventory[n].m_SocketOption[0], lpObj->pInventory[n].m_SocketOption[1],
 					lpObj->pInventory[n].m_SocketOption[2], lpObj->pInventory[n].m_SocketOption[3],
 					lpObj->pInventory[n].m_SocketOption[4], lpObj->pInventory[n].m_BonusSocketOption);
+#endif
+				
 			}
 		}
 	}
-
+#ifdef SEPARATE_LOGS
+	g_PlayerItemLog1.Output(lMsg.Get(MSGGET(1, 249)), lpObj->AccountID, lpObj->Name, lpObj->Money);
+#else
 	LogAddTD(lMsg.Get(MSGGET(1, 249)), lpObj->AccountID, lpObj->Name, lpObj->Money);
+#endif
 }
 
 void gObjWarehouseTextSave(LPOBJ lpObj)
@@ -3208,6 +3231,20 @@ void gObjWarehouseTextSave(LPOBJ lpObj)
 			//if ( lpObj->pWarehouse[n].m_serial != 0 ) //Season 2.5 removed
 			{
 				ItemIsBufExOption(NewOption, &lpObj->pWarehouse[n]);
+#ifdef SEPARATE_LOGS
+				g_PlayerItemLog1.Output(lMsg.Get(MSGGET(1, 250)), lpObj->AccountID, lpObj->Name, n, lpObj->pWarehouse[n].GetName(),
+					lpObj->pWarehouse[n].m_Level, lpObj->pWarehouse[n].m_Option1,
+					lpObj->pWarehouse[n].m_Option2, lpObj->pWarehouse[n].m_Option3,
+					lpObj->pWarehouse[n].m_Number, (BYTE)lpObj->pWarehouse[n].m_Durability,
+					NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4], NewOption[5], NewOption[6],
+					lpObj->pWarehouse[n].m_SetOption, lpObj->pWarehouse[n].m_ItemOptionEx>>7,
+					g_kJewelOfHarmonySystem.GetItemStrengthenOption(&lpObj->pWarehouse[n]),
+					g_kJewelOfHarmonySystem.GetItemOptionLevel(&lpObj->pWarehouse[n]),
+					//season4 add-on
+					lpObj->pWarehouse[n].m_SocketOption[0], lpObj->pWarehouse[n].m_SocketOption[1],
+					lpObj->pWarehouse[n].m_SocketOption[2], lpObj->pWarehouse[n].m_SocketOption[3],
+					lpObj->pWarehouse[n].m_SocketOption[4], lpObj->pWarehouse[n].m_BonusSocketOption);
+#else
 				LogAddTD(lMsg.Get(MSGGET(1, 250)), lpObj->AccountID, lpObj->Name, n, lpObj->pWarehouse[n].GetName(),
 					lpObj->pWarehouse[n].m_Level, lpObj->pWarehouse[n].m_Option1,
 					lpObj->pWarehouse[n].m_Option2, lpObj->pWarehouse[n].m_Option3,
@@ -3220,11 +3257,15 @@ void gObjWarehouseTextSave(LPOBJ lpObj)
 					lpObj->pWarehouse[n].m_SocketOption[0], lpObj->pWarehouse[n].m_SocketOption[1],
 					lpObj->pWarehouse[n].m_SocketOption[2], lpObj->pWarehouse[n].m_SocketOption[3],
 					lpObj->pWarehouse[n].m_SocketOption[4], lpObj->pWarehouse[n].m_BonusSocketOption);
+#endif
 			}
 		}
 	}
-
+#ifdef SEPARATE_LOGS
+	g_PlayerItemLog1.Output(lMsg.Get(MSGGET(1, 251)), lpObj->AccountID, lpObj->Name, lpObj->WarehouseMoney);
+#else
 	LogAddTD(lMsg.Get(MSGGET(1, 251)), lpObj->AccountID, lpObj->Name, lpObj->WarehouseMoney);
+#endif	
 }
 
 void gObjAuthorityCodeSet(LPOBJ lpObj)
@@ -15469,6 +15510,19 @@ BOOL TradeitemInventoryPut(int aIndex)
 			{
 				strcpy(szItemName,gObj[number].Trade[n].GetName());
 				ItemIsBufExOption(ExOption,&gObj[number].Trade[n]);
+				#ifdef SEPARATE_LOGS
+				g_TradeLog1.Output(lMsg.Get(538),
+					gObj[number].AccountID,gObj[number].Name,gObj[number].MapNumber,gObj[number].X,gObj[number].Y,
+					gObj[aIndex].AccountID,gObj[aIndex].Name,gObj[aIndex].MapNumber,gObj[aIndex].X,gObj[aIndex].Y,
+					szItemName,gObj[number].Trade[n].m_Number,gObj[number].Trade[n].m_Level,gObj[number].Trade[n].m_Option1,gObj[number].Trade[n].m_Option2,gObj[number].Trade[n].m_Option3,
+					ExOption[0],ExOption[1],ExOption[2],ExOption[3],ExOption[4],ExOption[5],ExOption[6],gObj[number].Trade[n].m_SetOption,
+					//season4 add-on
+					gObj[number].Trade[n].m_SocketOption[0],
+					gObj[number].Trade[n].m_SocketOption[1],
+					gObj[number].Trade[n].m_SocketOption[2],
+					gObj[number].Trade[n].m_SocketOption[3],
+					gObj[number].Trade[n].m_SocketOption[4]);
+				#else 
 				LogAddTD(lMsg.Get(538),
 					gObj[number].AccountID,gObj[number].Name,gObj[number].MapNumber,gObj[number].X,gObj[number].Y,
 					gObj[aIndex].AccountID,gObj[aIndex].Name,gObj[aIndex].MapNumber,gObj[aIndex].X,gObj[aIndex].Y,
@@ -15480,6 +15534,7 @@ BOOL TradeitemInventoryPut(int aIndex)
 					gObj[number].Trade[n].m_SocketOption[2],
 					gObj[number].Trade[n].m_SocketOption[3],
 					gObj[number].Trade[n].m_SocketOption[4]);
+				#endif
 
 			}
 			else
@@ -15509,7 +15564,12 @@ void gObjTradeOkButton(int aIndex)
 
 	if(gObj[number].TargetNumber != aIndex)
 	{
-		LogAdd(lMsg.Get(539),gObj[aIndex].AccountID,gObj[aIndex].Name,gObj[number].TargetNumber,gObj[number].TargetNumber);
+	#ifdef SEPARATE_LOGS
+			g_TradeLog1.Output(lMsg.Get(539),gObj[aIndex].AccountID,gObj[aIndex].Name,gObj[number].TargetNumber,gObj[number].TargetNumber);
+	#else
+			LogAdd(lMsg.Get(539),gObj[aIndex].AccountID,gObj[aIndex].Name,gObj[number].TargetNumber,gObj[number].TargetNumber);
+	#endif	
+
 		return;
 	}
 
@@ -15577,7 +15637,12 @@ void gObjTradeOkButton(int aIndex)
 		gObj[aIndex].Money += gObj[number].TradeMoney;
 		gObj[number].Money += gObj[aIndex].TradeMoney;
 
-		LogAddTD(lMsg.Get(540),gObj[aIndex].AccountID,gObj[aIndex].Name,gObj[number].AccountID,gObj[number].Name,gObj[aIndex].TradeMoney,gObj[number].TradeMoney);
+		#ifdef SEPARATE_LOGS
+			g_TradeLog1.Output(lMsg.Get(540),gObj[aIndex].AccountID,gObj[aIndex].Name,gObj[number].AccountID,gObj[number].Name,gObj[aIndex].TradeMoney,gObj[number].TradeMoney);
+		#else
+			LogAddTD(lMsg.Get(540),gObj[aIndex].AccountID,gObj[aIndex].Name,gObj[number].AccountID,gObj[number].Name,gObj[aIndex].TradeMoney,gObj[number].TradeMoney);
+		#endif
+		
 		GJSetCharacterInfo(&gObj[aIndex],aIndex,0, 0);
 		GJSetCharacterInfo(&gObj[number],number,0, 0);
 	}
@@ -16689,6 +16754,7 @@ void gObjViewportPaint(HWND hWnd, short aIndex)
 #else
 	TextOut(hdc, GAMESERVER_WIDTH / 2 - 200, 0, szTemp, strlen(szTemp));
 #endif
+
 	ReleaseDC(hWnd, hdc);
 }
 

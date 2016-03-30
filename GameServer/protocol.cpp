@@ -138,6 +138,13 @@ CLogToFile g_AllianceChatLog("Alliance", ".\\LOG\\Chat", TRUE);
 CLogToFile g_PrivateChatLog("Private", ".\\LOG\\Chat", TRUE);
 CLogToFile g_PartyChatLog("Party", ".\\LOG\\Chat", TRUE);
 CLogToFile g_ChatFilterLog("Filter", ".\\LOG\\Chat", TRUE);
+#ifdef SEPARATE_LOGS
+CLogToFile g_TradeLog("Trade", ".\\LOG\\Trade", TRUE);
+CLogToFile g_ChaosBoxLog1("ChaosBox", ".\\LOG\\ChaosBox", TRUE);
+CLogToFile g_ShopLog("Shop", ".\\LOG\\Shop", TRUE);
+CLogToFile g_PlayerItemLog("PlayerItem", ".\\LOG\\PlayerItem", TRUE);
+CLogToFile g_ItemBagLog("ItemBag", ".\\LOG\\ItemBag", TRUE);
+#endif
 
 #ifdef NPVP
 int OnCGInviteDuel(LPPMSG_REQ_DUEL_INVITE lpMsg, int aIndex);
@@ -3361,7 +3368,11 @@ void CGItemGetRequest(PMSG_ITEMGETREQUEST * lpMsg, int aIndex)
 
 							::ItemIsBufExOption(NewOption, (lpItem != NULL)?(CItem*)&lpItem->m_Number:NULL);
 
+#ifdef SEPARATE_LOGS
+							g_PlayerItemLog.Output(lMsg.Get(MSGGET(1, 221)), gObj[aIndex].AccountID, gObj[aIndex].Name, map_num, gObj[aIndex].X, gObj[aIndex].Y, lpItem->m_Number, szItemName, type, level, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, (int)lpItem->m_Durability, NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4], NewOption[5], NewOption[6], lpItem->m_SetOption, lpItem->m_ItemOptionEx>>7, g_kJewelOfHarmonySystem.GetItemStrengthenOption((lpItem)?((CItem *)&lpItem->m_Number):NULL), g_kJewelOfHarmonySystem.GetItemOptionLevel((lpItem)?((CItem *)&lpItem->m_Number):NULL));
+#else
 							LogAddTD(lMsg.Get(MSGGET(1, 221)), gObj[aIndex].AccountID, gObj[aIndex].Name, map_num, gObj[aIndex].X, gObj[aIndex].Y, lpItem->m_Number, szItemName, type, level, lpItem->m_Option1, lpItem->m_Option2, lpItem->m_Option3, (int)lpItem->m_Durability, NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4], NewOption[5], NewOption[6], lpItem->m_SetOption, lpItem->m_ItemOptionEx>>7, g_kJewelOfHarmonySystem.GetItemStrengthenOption((lpItem)?((CItem *)&lpItem->m_Number):NULL), g_kJewelOfHarmonySystem.GetItemOptionLevel((lpItem)?((CItem *)&lpItem->m_Number):NULL));
+#endif
 
 							pResult.result = -3;
 
@@ -3971,67 +3982,119 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 				if ( level == 1 )
 				{
 					::StarOfXMasOpenEven(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of StarOfXMas Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of StarOfXMas Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 2 )
 				{
 					::FireCrackerOpenEven(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of FireCracker Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of FireCracker Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 3 )
 				{
 					::HeartOfLoveOpenEven(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of HeartOfLove Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of HeartOfLove Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 6 )
 				{
 					::GoldMedalOpenEven(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of GoldMedal Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of GoldMedal Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 5 )
 				{
 					::SilverMedalOpenEven(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of SilverMedal Serial:%d (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of SilverMedal Serial:%d (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 7 )
 				{
 					::EventChipOpenEven(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of EventChip Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of EventChip Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 8 )
 				{
 					::EledoradoBoxOpenEven(&gObj[aIndex], level, 2, 50000);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of ElradoraBox-8 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of ElradoraBox-8 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 9 )
 				{
 					::EledoradoBoxOpenEven(&gObj[aIndex], level, 2, 100000);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of ElradoraBox-9 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of ElradoraBox-9 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 10 )
 				{
 					::EledoradoBoxOpenEven(&gObj[aIndex], level, 2, 150000);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of ElradoraBox-10 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of ElradoraBox-10 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 11 )
 				{
 					::EledoradoBoxOpenEven(&gObj[aIndex], level, 2, 200000);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of ElradoraBox1-11 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of ElradoraBox1-11 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 12 )
 				{
 					::EledoradoBoxOpenEven(&gObj[aIndex], level, 2, 250000);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of ElradoraBox1-12 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of ElradoraBox1-12 Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 13 )
 				{
 					::DarkLordHeartItemBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used box of DarkLordHeart Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD("[%s][%s][%d]%d/%d Used box of DarkLordHeart Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else if ( level == 0 )
 				{
 					::LuckyBoxOpenEven(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output(lMsg.Get(MSGGET(1, 222)), lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 					LogAddTD(lMsg.Get(MSGGET(1, 222)), lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 				}
 				else
 				{
@@ -4039,93 +4102,153 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 					DataSend(aIndex, (LPBYTE)&pResult, pResult.h.size);
 					return FALSE;
 				}
-
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s] Used box of luck (level:%d)", lpObj->AccountID, lpObj->Name, level);
+#else
 				LogAddTD("[%s][%s] Used box of luck (level:%d)", lpObj->AccountID, lpObj->Name, level);
+#endif
 			}
 			else if ( type == ITEMGET(12,32) )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				RedRibbonBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+					g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Christmas RibbonBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Christmas RibbonBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+			
+#endif
 			}
 			else if ( type == ITEMGET(12,33) )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				GreenRibbonBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Christmas RibbonBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else			
 				LogAddTD("[%s][%s][%d]%d/%d Used Christmas RibbonBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(12,34) )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				BlueRibbonBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Christmas RibbonBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Christmas RibbonBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,32) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				PinkChocolateBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Valentine's Day ChocolateBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Valentine's Day ChocolateBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,33)  && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				RedChocolateBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Valentine's Day ChocolateBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Valentine's Day ChocolateBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 
 			}
 			else if ( type == ITEMGET(14,34) && level == 0  )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				BlueChocolateBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Valentine's Day ChocolateBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Valentine's Day ChocolateBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,32)  && level == 1 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				LightPurpleCandyBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used WhiteDay CandyBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used WhiteDay CandyBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,33)  && level == 1  )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				VermilionCandyBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used WhiteDay CandyBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used WhiteDay CandyBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,34)  && level == 1 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				DeepBlueCandyBoxOpen(&gObj[aIndex]);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used WhiteDay CandyBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used WhiteDay CandyBox Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,45) )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				HallowinDayEventItemBoxOpen(lpObj);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Pumpkin of Luck Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Pumpkin of Luck Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,51) ) //Season 2.5 add-on Christmas Star identical
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				ChristmasStarDrop(lpObj);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Christmas-Star Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Christmas-Star Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,63) ) //Season 2.5 add-on FireCraker (from Natasha Seller) identical
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				ChristmasStarDrop(lpObj);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used FireCraker Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used FireCraker Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14,84) ) //Season 3.0 add-on Cherry Blossom Play-Box
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				CherryBlossomEventItemBoxOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used CherryBox Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used CherryBox Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14,99) ) //Season 4.0 add-on XMas FireCrack
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				ChristmasFireCrackDrop(lpObj);//ChristmasFireCrackerDrop
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used FireCraker Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used FireCraker Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)", lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(12,26) )
 			{
@@ -4153,8 +4276,11 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 						}
 
 						ItemSerialCreateSend(aIndex, lpObj->MapNumber, lpObj->X, lpObj->Y, ltype, Level, 1, 0, 0, 0, lpObj->m_Index, 0, 0);
-
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[Hidden TreasureBox Event] [%s][%s] Throw Mysterious Bead : Drop (%d) - serial:%u", lpObj->AccountID, lpObj->Name, Level, serial);
+#else
 						LogAddTD("[Hidden TreasureBox Event] [%s][%s] Throw Mysterious Bead : Drop (%d) - serial:%u", lpObj->AccountID, lpObj->Name, Level, serial);
+#endif
 					}
 					break;
 				case 1: case 2: case 3:
@@ -4171,12 +4297,19 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 
 						MsgSendV2(lpObj, (LPBYTE)&ServerCmd, sizeof(ServerCmd));
 						DataSend(lpObj->m_Index, (LPBYTE)&ServerCmd, sizeof(ServerCmd));
-
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[Hidden TreasureBox Event] [%s][%s] Throw Crystal (%d) - serial:%u", lpObj->AccountID, lpObj->Name, level, serial);
+#else
 						LogAddTD("[Hidden TreasureBox Event] [%s][%s] Throw Crystal (%d) - serial:%u", lpObj->AccountID, lpObj->Name, level, serial);
+#endif
 					}
 					break;
 				case 4:
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[Hidden TreasureBox Event] [%s][%s] Throw Hidden Treasure Box - serial:%u", lpObj->AccountID, lpObj->Name,  serial);
+#else
 					LogAddTD("[Hidden TreasureBox Event] [%s][%s] Throw Hidden Treasure Box - serial:%u", lpObj->AccountID, lpObj->Name,  serial);
+#endif
 
 					gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 					pResult.Result = true;
@@ -4184,7 +4317,11 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 
 					break;
 				case 5:
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[Hidden TreasureBox Event] [%s][%s] Throw Surprise Treasure Box - serial:%u", lpObj->AccountID, lpObj->Name,  serial);
+#else
 					LogAddTD("[Hidden TreasureBox Event] [%s][%s] Throw Surprise Treasure Box - serial:%u", lpObj->AccountID, lpObj->Name,  serial);
+#endif
 
 					gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 					pResult.Result = true;
@@ -4197,7 +4334,11 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 					{
 						int money = 1000000;
 						MapC[lpObj->MapNumber].MoneyItemDrop(money, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[Hidden TreasureBox Event] [%s][%s] Event ZenDrop : %d : (%d)(%d/%d)", lpObj->AccountID, lpObj->Name, money, lpObj->MapNumber, lpObj->X, lpObj->Y);
+#else
 						LogAddTD("[Hidden TreasureBox Event] [%s][%s] Event ZenDrop : %d : (%d)(%d/%d)", lpObj->AccountID, lpObj->Name, money, lpObj->MapNumber, lpObj->X, lpObj->Y);
+#endif
 					}
 					break;
 				}
@@ -4244,7 +4385,11 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 			{
 				if ( g_KalimaGate.CreateKalimaGate(aIndex, level, lpMsg->px, lpMsg->py))
 				{
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[Kalima] [%s][%s] Success to Make Kalima Gate (Lost Kalima Map Serial:%u)", gObj[aIndex].AccountID, gObj[aIndex].Name, gObj[aIndex].pInventory[lpMsg->Ipos].m_Number);
+#else
 					LogAddTD("[Kalima] [%s][%s] Success to Make Kalima Gate (Lost Kalima Map Serial:%u)", gObj[aIndex].AccountID, gObj[aIndex].Name, gObj[aIndex].pInventory[lpMsg->Ipos].m_Number);
+#endif
 					gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				}
 				else
@@ -4310,26 +4455,42 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				GMPresentBoxItemBagOpen(lpObj); //season 3.0 changed arguments
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used GM Present Box Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used GM Present Box Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 #ifdef PCBANG
 			else if ( type == ITEMGET(14,55) && level == 0 ) //Season 4.5 add-on PCBang Green Chaos Box identical
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				PCBangGreenChaosBoxItemBagOpen(&gObj[aIndex],lpObj->MapNumber,lpObj->X,lpObj->Y);
-				LogAddTD("[%s][%s][%d]%d/%d Used Box Of Green Chaos Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Box Of Green Chaos Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
+						LogAddTD("[%s][%s][%d]%d/%d Used Box Of Green Chaos Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,56) && level == 0 ) //Season 4.5 add-on PCBang Red Chaos Box identical
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				PCBangRedChaosBoxItemBagOpen(&gObj[aIndex],lpObj->MapNumber,lpObj->X,lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Box Of Red Chaos Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Box Of Red Chaos Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if ( type == ITEMGET(14,57) && level == 0 ) //Season 4.5 add-on PCBang Purple Chaos Box identical
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				PCBangPurpleChaosBoxItemBagOpen(&gObj[aIndex],lpObj->MapNumber,lpObj->X,lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Box Of Purple Chaos Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Box Of Purple Chaos Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 #endif
 #ifdef SEASON6DOT3_ENG
@@ -4337,63 +4498,106 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				GoldenBoxItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Golden Box Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",
+					lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Golden Box Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",
 					lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14, 124) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				SilverBoxItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Silver Box Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",
+							lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Silver Box Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",
 					lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
+					
 			}
 			else if( type == ITEMGET(14, 141) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				ShineJewelleryCaseItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used ShineJewelleryCase Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used ShineJewelleryCase Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14, 142) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				RefinedJewelleryCaseItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used RefinedJewelleryCase Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used RefinedJewelleryCase Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14, 143) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				IronJewelleryCaseItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used IronJewelleryCase Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used IronJewelleryCase Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14, 144) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				OldJewelleryCaseItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Golden Box Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Golden Box Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14, 157) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				BoxOfGreenColorItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+				g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Box Of GreenColor Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Box Of GreenColor Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14, 157) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				BoxOfGreenColorItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Box Of GreenColor Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Box Of GreenColor Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14, 158) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				BoxOfRedColorItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Box Of RedColor Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Box Of RedColor Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 			else if( type == ITEMGET(14, 159) && level == 0 )
 			{
 				gObjInventoryDeleteItem(aIndex, lpMsg->Ipos);
 				BoxOfPurpleColorItemBagOpen(&gObj[aIndex], lpObj->MapNumber, lpObj->X, lpObj->Y);
+#ifdef SEPARATE_LOGS
+						g_ItemBagLog.Output("[%s][%s][%d]%d/%d Used Box Of PurpleColor Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#else
 				LogAddTD("[%s][%s][%d]%d/%d Used Box Of PurpleColor Item Serial:%u (%s:%d/level:%d/skill:%d/op2:%d/op3:%d)",	lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3);
+#endif
 			}
 #endif
 			else
@@ -4412,11 +4616,19 @@ BOOL CGItemDropRequest(PMSG_ITEMTHROW * lpMsg, int aIndex, BOOL drop_type)
 
 					if ( drop_type == FALSE )
 					{
+#ifdef SEPARATE_LOGS
+						g_PlayerItemLog.Output(lMsg.Get(MSGGET(1, 223)), lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3, (int)dur, NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4], NewOption[5], NewOption[6], SOption, btItemEffectEx>>7, JOHOption, JOHOptionLevel);
+#else
 						LogAddTD(lMsg.Get(MSGGET(1, 223)), lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3, (int)dur, NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4], NewOption[5], NewOption[6], SOption, btItemEffectEx>>7, JOHOption, JOHOptionLevel);
+#endif
 					}
 					else
 					{
+#ifdef SEPARATE_LOGS
+						g_PlayerItemLog.Output(lMsg.Get(MSGGET(1, 224)), lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3, (int)dur, NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4], NewOption[5], NewOption[6], SOption, btItemEffectEx>>7, JOHOption, JOHOptionLevel); //season3.5 fixed
+#else
 						LogAddTD(lMsg.Get(MSGGET(1, 224)), lpObj->AccountID, lpObj->Name, lpObj->MapNumber, lpObj->X, lpObj->Y, serial, szItemName, type, level, Option1, Option2, Option3, (int)dur, NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4], NewOption[5], NewOption[6], SOption, btItemEffectEx>>7, JOHOption, JOHOptionLevel); //season3.5 fixed
+#endif
 					}
 				}
 				else
@@ -4888,16 +5100,21 @@ void CGInventoryItemMove(PMSG_INVENTORYITEMMOVE * lpMsg, int aIndex)
 				int iZen = lpObj->Money;
 				lpObj->Money -= money;
 				GCMoneySend(lpObj->m_Index, lpObj->Money);
-
+#ifdef SEPARATE_LOGS
+				g_PlayerItemLog.Output("Pay WareHouse Money(In Inventory) : %d - %d = %d", iZen, money, lpObj->Money);
+#else
 				LogAdd("Pay WareHouse Money(In Inventory) : %d - %d = %d", iZen, money, lpObj->Money);
+#endif
 			}
 			else if ( (lpObj->WarehouseMoney - money) > 0 )
 			{
 				int iZen = lpObj->WarehouseMoney;
 				lpObj->WarehouseMoney -= money;
-
+#ifdef SEPARATE_LOGS
+				g_PlayerItemLog.Output("Pay WareHouse Money(In WareHouse) : %d - %d = %d", iZen, money, lpObj->WarehouseMoney);
+#else
 				LogAdd("Pay WareHouse Money(In WareHouse) : %d - %d = %d", iZen, money, lpObj->WarehouseMoney);
-
+#endif
 				GCWarehouseInventoryMoneySend(aIndex, 1, lpObj->Money, lpObj->WarehouseMoney);
 			}
 		}
@@ -5188,8 +5405,11 @@ void CGTalkRequestRecv(PMSG_TALKREQUEST * lpMsg, int aIndex)
 
 			DataSend(aIndex, (LPBYTE)&pResult, pResult.h.size);
 			gObjInventoryTrans(lpObj->m_Index);
-
+#ifdef SEPARATE_LOGS
+			g_ChaosBoxLog1.Output("[%s][%s] Open Chaos Box", lpObj->AccountID, lpObj->Name);
+#else
 			LogAddTD("[%s][%s] Open Chaos Box", lpObj->AccountID, lpObj->Name);
+#endif
 			gObjItemTextSave(lpObj);
 			gObjWarehouseTextSave(lpObj);
 			GCAnsCsMapSvrTaxInfo( lpObj->m_Index, 1, ::g_CastleSiegeSync.GetTaxRateChaos(lpObj->m_Index));
@@ -5486,7 +5706,11 @@ void CGBuyRequestRecv(PMSG_BUYREQUEST * lpMsg, int aIndex)
 						}
 						GCMoneySend(aIndex, lpObj->Money);
 						int iTaxRate = g_CastleSiegeSync.GetTaxRateStore(lpObj->m_Index);
+#ifdef SEPARATE_LOGS
+						g_ShopLog.Output("[%s][%s] (%d) Shop buy [%d][%d][%d][%s] LEV:%d, DUR:%d, OP:[%d][%d][%d]", lpObj->AccountID, lpObj->Name, tShop, lc64, iTaxRate, lc64+iStoreTaxMoney2, ShopC[tShop].m_item[lpMsg->Pos].GetName(), ShopC[tShop].m_item[lpMsg->Pos].m_Level, ShopC[tShop].m_item[lpMsg->Pos].m_Durability, ShopC[tShop].m_item[lpMsg->Pos].m_Option1, ShopC[tShop].m_item[lpMsg->Pos].m_Option2, ShopC[tShop].m_item[lpMsg->Pos].m_Option3);
+#else
 						LogAddTD("[%s][%s] (%d) Shop buy [%d][%d][%d][%s] LEV:%d, DUR:%d, OP:[%d][%d][%d]", lpObj->AccountID, lpObj->Name, tShop, lc64, iTaxRate, lc64+iStoreTaxMoney2, ShopC[tShop].m_item[lpMsg->Pos].GetName(), ShopC[tShop].m_item[lpMsg->Pos].m_Level, ShopC[tShop].m_item[lpMsg->Pos].m_Durability, ShopC[tShop].m_item[lpMsg->Pos].m_Option1, ShopC[tShop].m_item[lpMsg->Pos].m_Option2, ShopC[tShop].m_item[lpMsg->Pos].m_Option3);
+#endif
 						DataSend(aIndex, (LPBYTE)&pResult, pResult.h.size);
 						return;
 					}
@@ -5510,7 +5734,11 @@ void CGBuyRequestRecv(PMSG_BUYREQUEST * lpMsg, int aIndex)
 
 						int iTaxRate = g_CastleSiegeSync.GetTaxRateStore(lpObj->m_Index);
 
+#ifdef SEPARATE_LOGS
+						g_ShopLog.Output("[%s][%s] (%d) Shop buy [%d][%d][%d][%s] LEV:%d, DUR:%d, OP:[%d][%d][%d]", lpObj->AccountID, lpObj->Name, tShop, lc64, iTaxRate, lc64+iStoreTaxMoney2, ShopC[tShop].m_item[lpMsg->Pos].GetName(), ShopC[tShop].m_item[lpMsg->Pos].m_Level, ShopC[tShop].m_item[lpMsg->Pos].m_Durability, ShopC[tShop].m_item[lpMsg->Pos].m_Option1, ShopC[tShop].m_item[lpMsg->Pos].m_Option2, ShopC[tShop].m_item[lpMsg->Pos].m_Option3);
+#else
 						LogAddTD("[%s][%s] (%d) Shop buy [%d][%d][%d][%s] LEV:%d, DUR:%d, OP:[%d][%d][%d]", lpObj->AccountID, lpObj->Name, tShop, lc64, iTaxRate, lc64+iStoreTaxMoney2, ShopC[tShop].m_item[lpMsg->Pos].GetName(), ShopC[tShop].m_item[lpMsg->Pos].m_Level, ShopC[tShop].m_item[lpMsg->Pos].m_Durability, ShopC[tShop].m_item[lpMsg->Pos].m_Option1, ShopC[tShop].m_item[lpMsg->Pos].m_Option2, ShopC[tShop].m_item[lpMsg->Pos].m_Option3);
+#endif
 
 					}
 				}
@@ -5722,6 +5950,17 @@ void CGSellRequestRecv(PMSG_SELLREQUEST * lpMsg, int aIndex)
 
 		ItemIsBufExOption(NewOption, &lpObj->pInventory[lpMsg->Pos]);
 
+#ifdef SEPARATE_LOGS
+		g_ShopLog.Output(lMsg.Get(MSGGET(1, 229)), lpObj->AccountID, lpObj->Name, tShop,
+			iAddZen, lpObj->pInventory[lpMsg->Pos].GetName(), 
+			lpObj->pInventory[lpMsg->Pos].m_Level, lpObj->pInventory[lpMsg->Pos].m_Option1,
+			lpObj->pInventory[lpMsg->Pos].m_Option2, lpObj->pInventory[lpMsg->Pos].m_Option3,
+			lpObj->pInventory[lpMsg->Pos].m_Number, (int)lpObj->pInventory[lpMsg->Pos].m_Durability,
+			NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4], NewOption[5], NewOption[6], 
+			lpObj->pInventory[lpMsg->Pos].m_SetOption, lpObj->pInventory[lpMsg->Pos].m_ItemOptionEx >> 7, //season 2.5 add-on
+			g_kJewelOfHarmonySystem.GetItemStrengthenOption(&lpObj->pInventory[lpMsg->Pos]),
+			g_kJewelOfHarmonySystem.GetItemOptionLevel(&lpObj->pInventory[lpMsg->Pos]));
+#else
 		LogAddTD(lMsg.Get(MSGGET(1, 229)), lpObj->AccountID, lpObj->Name, tShop,
 			iAddZen, lpObj->pInventory[lpMsg->Pos].GetName(), 
 			lpObj->pInventory[lpMsg->Pos].m_Level, lpObj->pInventory[lpMsg->Pos].m_Option1,
@@ -5731,6 +5970,7 @@ void CGSellRequestRecv(PMSG_SELLREQUEST * lpMsg, int aIndex)
 			lpObj->pInventory[lpMsg->Pos].m_SetOption, lpObj->pInventory[lpMsg->Pos].m_ItemOptionEx >> 7, //season 2.5 add-on
 			g_kJewelOfHarmonySystem.GetItemStrengthenOption(&lpObj->pInventory[lpMsg->Pos]),
 			g_kJewelOfHarmonySystem.GetItemOptionLevel(&lpObj->pInventory[lpMsg->Pos]));
+#endif
 
 		::gObjInventoryDeleteItem(aIndex, lpMsg->Pos);
 
@@ -5953,6 +6193,7 @@ void ItemDurRepaire(LPOBJ lpObj, CItem * DurItem, int pos, int RequestPos)
 	}
 	DataSend(lpObj->m_Index, (LPBYTE)&pResult, pResult.h.size);
 }
+
 void CGModifyRequestItem(PMSG_ITEMDURREPAIR * lpMsg, int aIndex) 
 {
 	LPOBJ lpObj = &gObj[aIndex];
@@ -6312,10 +6553,17 @@ void CGTradeRequestSend(PMSG_TRADE_REQUEST * lpMsg, int aIndex)
 
 	DataSend(number, (LPBYTE)&pMsg, pMsg.h.size);
 
+#ifdef SEPARATE_LOGS
+	g_TradeLog.Output(lMsg.Get(MSGGET(1, 230)), gObj[aIndex].AccountID, 
+		gObj[aIndex].Name, gObj[aIndex].Ip_addr, 
+		gObj[number].AccountID, gObj[number].Name, 
+		gObj[number].Ip_addr);
+#else
 	LogAddTD(lMsg.Get(MSGGET(1, 230)), gObj[aIndex].AccountID, 
 		gObj[aIndex].Name, gObj[aIndex].Ip_addr, 
 		gObj[number].AccountID, gObj[number].Name, 
 		gObj[number].Ip_addr);
+#endif
 }
 
 
@@ -6454,7 +6702,11 @@ void CGTradeResponseRecv(PMSG_TRADE_RESPONSE * lpMsg, int aIndex)
 			GCTradeResponseSend(lpMsg->Response, number, gObj[aIndex].Name, gObj[aIndex].Level, gObj[aIndex].GuildNumber);
 			GCTradeResponseSend(lpMsg->Response, aIndex, gObj[number].Name, gObj[number].Level, gObj[number].GuildNumber);
 
+#ifdef SEPARATE_LOGS
+			g_TradeLog.Output("[%s][%s] Trade Ready [%s][%s]", gObj[number].AccountID, gObj[number].Name, gObj[aIndex].AccountID, gObj[aIndex].Name);
+#else
 			LogAddTD("[%s][%s] Trade Ready [%s][%s]", gObj[number].AccountID, gObj[number].Name, gObj[aIndex].AccountID, gObj[aIndex].Name);
+#endif
 		}
 	}
 
@@ -6554,7 +6806,11 @@ void CGTradeMoneyRecv(PMSG_TRADE_GOLD * lpMsg, int aIndex)
 
 	if ( gObj[aIndex].CloseType != -1 )
 	{
+#ifdef SEPARATE_LOGS
+		g_TradeLog.Output(lMsg.Get(MSGGET(1, 231)), gObj[aIndex].AccountID, gObj[aIndex].Name);
+#else
 		LogAdd(lMsg.Get(MSGGET(1, 231)), gObj[aIndex].AccountID, gObj[aIndex].Name);
+#endif
 		return;
 	}
 
@@ -6678,7 +6934,11 @@ void CGTradeOkButtonRecv(PMSG_TRADE_OKBUTTON * lpMsg, int aIndex)
 		if ( gObj[aIndex].TradeOk == false )
 		{
 			gObj[aIndex].TradeOk = true;
+#ifdef SEPARATE_LOGS
+			g_TradeLog.Output("[%s][%s] Trade Accept", gObj[aIndex].AccountID, gObj[aIndex].Name);
+#else
 			LogAddTD("[%s][%s] Trade Accept", gObj[aIndex].AccountID, gObj[aIndex].Name);
+#endif
 			GCTradeOkButtonSend(number, 1);
 		}
 	}
@@ -9711,14 +9971,22 @@ void CGWarehouseMoneyInOut(int aIndex, PMSG_WAREHOUSEMONEYINOUT* lpMsg)
 				lpObj->Money -= rZen;
 				GCMoneySend(lpObj->m_Index, lpObj->Money);
 
+#ifdef SEPARATE_LOGS
+				g_PlayerItemLog.Output("Get WareHouse Money(In Inventory) : %d - %d = %d", oldmoney, rZen, lpObj->Money);
+#else
 				LogAdd("Get WareHouse Money(In Inventory) : %d - %d = %d", oldmoney, rZen, lpObj->Money);
+#endif
 			}
 			else if ( (lpObj->WarehouseMoney-rZen) > 0 )
 			{
 				int oldmoney = lpObj->WarehouseMoney;
 				lpObj->WarehouseMoney -= rZen;
 
+#ifdef SEPARATE_LOGS
+				g_PlayerItemLog.Output("Get WareHouse Money(In WareHouse) : %d - %d = %d", oldmoney, rZen, lpObj->WarehouseMoney);
+#else
 				LogAdd("Get WareHouse Money(In WareHouse) : %d - %d = %d", oldmoney, rZen, lpObj->WarehouseMoney);
+#endif
 
 				GCWarehouseInventoryMoneySend(aIndex, 1, lpObj->Money, lpObj->WarehouseMoney);
 			}

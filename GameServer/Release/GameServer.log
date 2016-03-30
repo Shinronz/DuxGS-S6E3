@@ -1,21 +1,536 @@
-﻿Compilación iniciada a las 29/03/2016 11:14:26 a.m..
-     1>Proyecto "C:\Users\Administrador\Desktop\DuxGSS6E3\zGameServer_NA\GameServer\GameServer.vcxproj" en el nodo 2 (build destinos).
+﻿Compilación iniciada a las 3/30/2016 12:21:23 PM.
+     1>Proyecto "C:\Users\Administrador\Desktop\DuxGS-S6E3\GameServer\GameServer.vcxproj" en el nodo 2 (build destinos).
        El archivo del proyecto contiene ToolsVersion="12.0", que esta versión de MSBuild no admite. Se tratará el proyecto como si contuviera ToolsVersion="4.0".
      1>InitializeBuildStatus:
-         Aplicando tarea Touch a ".\Release\GameServer.unsuccessfulbuild".
+         Se creará ".\Release\GameServer.unsuccessfulbuild" porque se especificó "AlwaysCreate".
        ClCompile:
-         Todas las salidas están actualizadas.
-         Todas las salidas están actualizadas.
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W0 /WX- /O2 /Ob1 /Oy- /D WIN32 /D _WINDOWS /D INTERNATIONAL_JAPAN /D _VC80_UPGRADE=0x0600 /D _MBCS /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp".\Release\GameServer.pch" /Fo".\Release\\" /Fd".\Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt StdAfx.cpp
+         StdAfx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W0 /WX- /O2 /Ob1 /Oy- /D WIN32 /D _WINDOWS /D INTERNATIONAL_JAPAN /D _VC80_UPGRADE=0x0600 /D _MBCS /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp".\Release\GameServer.pch" /Fo".\Release\\" /Fd".\Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\common\zzzitem.cpp AcceptIp.cpp AntiHack.cpp BackDoor.cpp BalanceSystem.cpp ChatFilter.cpp ClassCalc.cpp ConnectEx.cpp DropEvent.cpp DropEx.cpp ExUtilits.cpp ItemOption.cpp ItemRank.cpp JewelsEx.cpp MonsterSpawner.cpp OffExp.cpp OfflineTrade.cpp PKClear.cpp PVPZone.cpp AttackEvent.cpp BattleGround.cpp BattleSoccer.cpp BattleSoccerManager.cpp BloodCastle.cpp BuffEffect.cpp BuffEffectSlot.cpp BuffScriptLoader.cpp CallStackTrace.cpp CannonTower.cpp CashItemPeriodSystem.cpp CashLotterySystem.cpp CashShop.cpp CastleCrown.cpp CastleCrownSwitch.cpp CastleDeepEvent.cpp CastleSiege.cpp CastleSiegeSync.cpp ChaosCard.cpp ChaosCastle.cpp CheatGuard.cpp DummyAttackProtocol.cpp HackToolBlock.cpp HacktoolBlockEx.cpp KeyGenerater.cpp License.cpp MixOption.cpp NewsBoard.cpp OfflineAttack.cpp CraftSystem.cpp Doppelganger.cpp DoppelgangerEventInfo.cpp DoppelgangerItemBag.cpp DoppelgangerLua.cpp DoppelgangerPosInfo.cpp EventDungeonItemBag.cpp ..\common\classdef.cpp CLoginCount.cpp ClosePlayer.cpp ComboAttack.cpp ConMember.cpp Crywolf.cpp CrywolfAltar.cpp CrywolfDarkElf.cpp CrywolfMonster.cpp CrywolfStateTimeInfo.cpp CrywolfStatue.cpp CrywolfSync.cpp CrywolfTanker.cpp CrywolfUtil.cpp CWhatsUpDummyServer.cpp DarkSpirit.cpp DbSave.cpp DBSockMng.cpp DevilSquare.cpp DevilSquareGround.cpp DirPath.cpp DragonEvent.cpp DSProtocol.cpp EDSProtocol.cpp EledoradoEvent.cpp Event.cpp EventManagement.cpp GambleSystem.cpp GameMain.cpp GameServer.cpp GameShop.cpp Gate.cpp GensSystem.cpp giocp.cpp GMMng.cpp gObjMonster.cpp Guardian.cpp GuardianStatue.cpp GuildClass.cpp IllusionTempleEvent.cpp IllusionTempleProcess.cpp ImperialGuardian.cpp ImperialGuardianRewardExp.cpp IpCache.cpp ItemAddOption.cpp ItemBag.cpp ItemBagEx.cpp ItemPrice.cpp ItemSeedSphere.cpp ItemSocketOptionSystem.cpp ItemSystemFor380.cpp JewelMixSystem.cpp JewelOfHarmonySystem.cpp KalimaGate.cpp Kanturu.cpp KanturuBattleOfMaya.cpp KanturuBattleOfNightmare.cpp KanturuBattleStanby.cpp KanturuBattleUserMng.cpp KanturuEntranceNPC.cpp KanturuMaya.cpp KanturuMonsterMng.cpp KanturuNightmare.cpp KanturuStateInfo.cpp KanturuTowerOfRefinement.cpp KanturuUtil.cpp LargeRand.cpp LifeStone.cpp logproc.cpp LogToFile.cpp LuaFun.cpp LuaExport.cpp LuaMonsterDie.cpp LuaNPC.cpp LuaSample.cpp LuckyItem.cpp MagicDamage.cpp MagicInf.cpp MapClass.cpp MapItem.cpp MapServerManager.cpp MasterLevelSkillTreeSystem.cpp Mercenary.cpp MiniDump.cpp MixSystem.cpp MonsterAttr.cpp MonsterHerd.cpp MonsterItemMng.cpp MonsterRegenSystem.cpp MonsterSetBase.cpp MonsterStatCalc.cpp MoveCheck.cpp MoveCommand.cpp MUHelper.cpp MultiAttackHackCheck.cpp MultiCheckSum.cpp ..\common\MyWinsockBase.cpp MuLua.cpp MuMsg.cpp NewPVP.cpp NpcTalk.cpp NSerialCheck.cpp ObjAttack.cpp ObjBaseAttack.cpp ObjCalCharacter.cpp ObjUseSkill.cpp PacketCheckSum.cpp PacketStatistics.cpp PartyClass.cpp PCBangPointSystem.cpp PeriodItemEx.cpp protocol.cpp QuestExpInfo.cpp QuestExpLuaBind.cpp QuestExpProgMng.cpp QuestExpProtocol.cpp QuestExpUserInfo.cpp QuestExpUserMng.cpp QuestInfo.cpp QuestSystem.cpp QuestUtil.cpp Raklion.cpp RaklionBattleOfSelupan.cpp RaklionBattleUserMng.cpp RaklionSelupan.cpp RaklionUtil.cpp ResetSystem.cpp RingAttackEvent.cpp ScriptEncode.cpp SetItemMacro.cpp ..\common\SetItemOption.cpp Shop.cpp ShopPointEx.cpp SkillAdditionInfo.cpp SkillDelay.cpp SkillHitBox.cpp SProtocol.cpp StatMng.cpp TemporaryUserManager.cpp TMonsterAI.cpp TMonsterAIAgro.cpp TMonsterAIAutomata.cpp TMonsterAIElement.cpp TMonsterAIGroup.cpp TMonsterAIGroupMember.cpp TMonsterAIMovePath.cpp TMonsterAIRule.cpp TMonsterAIRuleInfo.cpp TMonsterAIUnit.cpp TMonsterAIUtil.cpp TMonsterSkillElement.cpp TMonsterSkillElementInfo.cpp TMonsterSkillManager.cpp TMonsterSkillUnit.cpp TNotice.cpp TRandomPoolMgr.cpp TServerInfoDisplayer.cpp ..\common\TSync.cpp TUnion.cpp TUnionInfo.cpp TvTEvent.cpp user.cpp ViewportGuild.cpp Weapon.cpp WhisperCash.cpp ..\common\winutil.cpp WinConsole.cpp wsGameServer.cpp wsJoinServerCli.cpp ..\common\WzMemScript.cpp wsShopServerCli.cpp WzAG.cpp WzMultiCastSock.cpp WzQueue.cpp ..\common\WZScriptEncode.cpp WzUdp.cpp XMasAttackEvent.cpp XMasAttackEventData.cpp zzzmathlib.cpp MasterLevelSystem.cpp ProbabilityItemBag.cpp
+         zzzitem.cpp
+         AcceptIp.cpp
+         AntiHack.cpp
+         BackDoor.cpp
+         BalanceSystem.cpp
+         ChatFilter.cpp
+         ClassCalc.cpp
+         ConnectEx.cpp
+         DropEvent.cpp
+         DropEx.cpp
+         ExUtilits.cpp
+         ItemOption.cpp
+         ItemRank.cpp
+         JewelsEx.cpp
+         MonsterSpawner.cpp
+         OffExp.cpp
+         OfflineTrade.cpp
+         PKClear.cpp
+         PVPZone.cpp
+         AttackEvent.cpp
+         Generando código...
+         Compilando...
+         BattleGround.cpp
+         BattleSoccer.cpp
+         BattleSoccerManager.cpp
+         BloodCastle.cpp
+         BuffEffect.cpp
+         BuffEffectSlot.cpp
+         BuffScriptLoader.cpp
+         CallStackTrace.cpp
+         CannonTower.cpp
+         CashItemPeriodSystem.cpp
+         CashLotterySystem.cpp
+         CashShop.cpp
+         CastleCrown.cpp
+         CastleCrownSwitch.cpp
+         CastleDeepEvent.cpp
+         CastleSiege.cpp
+         CastleSiegeSync.cpp
+         ChaosCard.cpp
+         ChaosCastle.cpp
+         CheatGuard.cpp
+         Generando código...
+         Compilando...
+         DummyAttackProtocol.cpp
+         HackToolBlock.cpp
+         HacktoolBlockEx.cpp
+         KeyGenerater.cpp
+         License.cpp
+         MixOption.cpp
+         NewsBoard.cpp
+         OfflineAttack.cpp
+         CraftSystem.cpp
+         Doppelganger.cpp
+         DoppelgangerEventInfo.cpp
+         DoppelgangerItemBag.cpp
+         DoppelgangerLua.cpp
+         DoppelgangerPosInfo.cpp
+         EventDungeonItemBag.cpp
+         classdef.cpp
+         CLoginCount.cpp
+         ClosePlayer.cpp
+         ComboAttack.cpp
+         ConMember.cpp
+         Generando código...
+         Compilando...
+         Crywolf.cpp
+         CrywolfAltar.cpp
+         CrywolfDarkElf.cpp
+         CrywolfMonster.cpp
+         CrywolfStateTimeInfo.cpp
+         CrywolfStatue.cpp
+         CrywolfSync.cpp
+         CrywolfTanker.cpp
+         CrywolfUtil.cpp
+         CWhatsUpDummyServer.cpp
+         DarkSpirit.cpp
+         DbSave.cpp
+         DBSockMng.cpp
+         DevilSquare.cpp
+         DevilSquareGround.cpp
+         DirPath.cpp
+         DragonEvent.cpp
+         DSProtocol.cpp
+         ##### REMOVE ME ######
+         EDSProtocol.cpp
+         EledoradoEvent.cpp
+         Generando código...
+         Compilando...
+         Event.cpp
+         EventManagement.cpp
+         GambleSystem.cpp
+         GameMain.cpp
+         GameServer.cpp
+         GameShop.cpp
+         Gate.cpp
+         GensSystem.cpp
+         giocp.cpp
+         GMMng.cpp
+         !!!!!!!!!!!!!!!!! ADD PREFIX SETTING !!!!!!!!!!!!!!!!
+         gObjMonster.cpp
+         Guardian.cpp
+         GuardianStatue.cpp
+         GuildClass.cpp
+         IllusionTempleEvent.cpp
+         #### Enable me after time ####
+         IllusionTempleProcess.cpp
+         ImperialGuardian.cpp
+         ImperialGuardianRewardExp.cpp
+         IpCache.cpp
+         ItemAddOption.cpp
+         Generando código...
+         Compilando...
+         ItemBag.cpp
+         ItemBagEx.cpp
+         ItemPrice.cpp
+         ItemSeedSphere.cpp
+         ItemSocketOptionSystem.cpp
+         ItemSystemFor380.cpp
+         JewelMixSystem.cpp
+         JewelOfHarmonySystem.cpp
+         KalimaGate.cpp
+         Kanturu.cpp
+         KanturuBattleOfMaya.cpp
+         KanturuBattleOfNightmare.cpp
+         KanturuBattleStanby.cpp
+         KanturuBattleUserMng.cpp
+         KanturuEntranceNPC.cpp
+         KanturuMaya.cpp
+         KanturuMonsterMng.cpp
+         KanturuNightmare.cpp
+         KanturuStateInfo.cpp
+         KanturuTowerOfRefinement.cpp
+         Generando código...
+         Compilando...
+         KanturuUtil.cpp
+         LargeRand.cpp
+         LifeStone.cpp
+         logproc.cpp
+         LogToFile.cpp
+         LuaFun.cpp
+         LuaExport.cpp
+         LuaMonsterDie.cpp
+         LuaNPC.cpp
+         LuaSample.cpp
+         LuckyItem.cpp
+         ##### CHECK ME ######
+         #### FIX ME ####
+         #### FIX ME ####
+         MagicDamage.cpp
+         MagicInf.cpp
+         MapClass.cpp
+         MapItem.cpp
+         MapServerManager.cpp
+         MasterLevelSkillTreeSystem.cpp
+         ##### FIX ME #####
+         fix me
+         fix me
+         Mercenary.cpp
+         MiniDump.cpp
+         MixSystem.cpp
+         Generando código...
+         Compilando...
+         MonsterAttr.cpp
+         MonsterHerd.cpp
+         MonsterItemMng.cpp
+         MonsterRegenSystem.cpp
+         MonsterSetBase.cpp
+         MonsterStatCalc.cpp
+         MoveCheck.cpp
+         MoveCommand.cpp
+         MUHelper.cpp
+         MultiAttackHackCheck.cpp
+         MultiCheckSum.cpp
+         MyWinsockBase.cpp
+         MuLua.cpp
+         MuMsg.cpp
+         NewPVP.cpp
+         NpcTalk.cpp
+         NSerialCheck.cpp
+         ObjAttack.cpp
+         CHECK ME
+         ObjBaseAttack.cpp
+         ObjCalCharacter.cpp
+         fix meeeee
+         Generando código...
+         Compilando...
+         ObjUseSkill.cpp
+         PacketCheckSum.cpp
+         PacketStatistics.cpp
+         PartyClass.cpp
+         PCBangPointSystem.cpp
+         PeriodItemEx.cpp
+         protocol.cpp
+         #### UNCOMMENT ME #####
+         ##### CHANGE ME ######
+         QuestExpInfo.cpp
+         QuestExpLuaBind.cpp
+         QuestExpProgMng.cpp
+         QuestExpProtocol.cpp
+         QuestExpUserInfo.cpp
+         QuestExpUserMng.cpp
+         QuestInfo.cpp
+         QuestSystem.cpp
+         QuestUtil.cpp
+         Raklion.cpp
+         RaklionBattleOfSelupan.cpp
+         RaklionBattleUserMng.cpp
+         RaklionSelupan.cpp
+         Generando código...
+         Compilando...
+         RaklionUtil.cpp
+         ResetSystem.cpp
+         RingAttackEvent.cpp
+         ScriptEncode.cpp
+         SetItemMacro.cpp
+         SetItemOption.cpp
+         Shop.cpp
+         ShopPointEx.cpp
+         SkillAdditionInfo.cpp
+         SkillDelay.cpp
+         SkillHitBox.cpp
+         SProtocol.cpp
+         StatMng.cpp
+         TemporaryUserManager.cpp
+         TMonsterAI.cpp
+         TMonsterAIAgro.cpp
+         TMonsterAIAutomata.cpp
+         TMonsterAIElement.cpp
+         TMonsterAIGroup.cpp
+         TMonsterAIGroupMember.cpp
+         Generando código...
+         Compilando...
+         TMonsterAIMovePath.cpp
+         TMonsterAIRule.cpp
+         TMonsterAIRuleInfo.cpp
+         TMonsterAIUnit.cpp
+         TMonsterAIUtil.cpp
+         TMonsterSkillElement.cpp
+         TMonsterSkillElementInfo.cpp
+         TMonsterSkillManager.cpp
+         TMonsterSkillUnit.cpp
+         TNotice.cpp
+         TRandomPoolMgr.cpp
+         TServerInfoDisplayer.cpp
+         TSync.cpp
+         TUnion.cpp
+         TUnionInfo.cpp
+         TvTEvent.cpp
+         user.cpp
+         ViewportGuild.cpp
+         Weapon.cpp
+         WhisperCash.cpp
+         Generando código...
+         Compilando...
+         winutil.cpp
+         WinConsole.cpp
+         wsGameServer.cpp
+         wsJoinServerCli.cpp
+         WzMemScript.cpp
+         wsShopServerCli.cpp
+         WzAG.cpp
+         WzMultiCastSock.cpp
+         WzQueue.cpp
+         WZScriptEncode.cpp
+         WzUdp.cpp
+         XMasAttackEvent.cpp
+         XMasAttackEventData.cpp
+         zzzmathlib.cpp
+         MasterLevelSystem.cpp
+         ##### REMOVE ME #####
+         ProbabilityItemBag.cpp
+         Generando código...
        ResourceCompile:
-         Todas las salidas están actualizadas.
+         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _DEBUG /D _VC80_UPGRADE=0x0600 /l"0x0419" /nologo /fo".\Release\GameServer.res" GameServer.rc 
        Link:
-         Todas las salidas están actualizadas.
-         GameServer.vcxproj -> C:\Users\Administrador\Desktop\DuxGSS6E3\zGameServer_NA\GameServer\..\Release\GameServer.exe
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\Release\GameServer.exe" /INCREMENTAL:NO /NOLOGO odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:LIBC /MANIFEST /ManifestFile:".\Release\GameServer.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:"C:\Users\Administrador\Desktop\DuxGS-S6E3\Release\GameServer.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"..\Release\GameServer.lib" /MACHINE:X86 .\Release\GameServer.res
+         .\Release\zzzitem.obj
+         .\Release\AcceptIp.obj
+         .\Release\AntiHack.obj
+         .\Release\BackDoor.obj
+         .\Release\BalanceSystem.obj
+         .\Release\ChatFilter.obj
+         .\Release\ClassCalc.obj
+         .\Release\ConnectEx.obj
+         .\Release\DropEvent.obj
+         .\Release\DropEx.obj
+         .\Release\ExUtilits.obj
+         .\Release\ItemOption.obj
+         .\Release\ItemRank.obj
+         .\Release\JewelsEx.obj
+         .\Release\MonsterSpawner.obj
+         .\Release\OffExp.obj
+         .\Release\OfflineTrade.obj
+         .\Release\PKClear.obj
+         .\Release\PVPZone.obj
+         .\Release\AttackEvent.obj
+         .\Release\BattleGround.obj
+         .\Release\BattleSoccer.obj
+         .\Release\BattleSoccerManager.obj
+         .\Release\BloodCastle.obj
+         .\Release\BuffEffect.obj
+         .\Release\BuffEffectSlot.obj
+         .\Release\BuffScriptLoader.obj
+         .\Release\CallStackTrace.obj
+         .\Release\CannonTower.obj
+         .\Release\CashItemPeriodSystem.obj
+         .\Release\CashLotterySystem.obj
+         .\Release\CashShop.obj
+         .\Release\CastleCrown.obj
+         .\Release\CastleCrownSwitch.obj
+         .\Release\CastleDeepEvent.obj
+         .\Release\CastleSiege.obj
+         .\Release\CastleSiegeSync.obj
+         .\Release\ChaosCard.obj
+         .\Release\ChaosCastle.obj
+         .\Release\CheatGuard.obj
+         .\Release\DummyAttackProtocol.obj
+         .\Release\HackToolBlock.obj
+         .\Release\HacktoolBlockEx.obj
+         .\Release\KeyGenerater.obj
+         .\Release\License.obj
+         .\Release\MixOption.obj
+         .\Release\NewsBoard.obj
+         .\Release\OfflineAttack.obj
+         .\Release\CraftSystem.obj
+         .\Release\Doppelganger.obj
+         .\Release\DoppelgangerEventInfo.obj
+         .\Release\DoppelgangerItemBag.obj
+         .\Release\DoppelgangerLua.obj
+         .\Release\DoppelgangerPosInfo.obj
+         .\Release\EventDungeonItemBag.obj
+         .\Release\classdef.obj
+         .\Release\CLoginCount.obj
+         .\Release\ClosePlayer.obj
+         .\Release\ComboAttack.obj
+         .\Release\ConMember.obj
+         .\Release\Crywolf.obj
+         .\Release\CrywolfAltar.obj
+         .\Release\CrywolfDarkElf.obj
+         .\Release\CrywolfMonster.obj
+         .\Release\CrywolfStateTimeInfo.obj
+         .\Release\CrywolfStatue.obj
+         .\Release\CrywolfSync.obj
+         .\Release\CrywolfTanker.obj
+         .\Release\CrywolfUtil.obj
+         .\Release\CWhatsUpDummyServer.obj
+         .\Release\DarkSpirit.obj
+         .\Release\DbSave.obj
+         .\Release\DBSockMng.obj
+         .\Release\DevilSquare.obj
+         .\Release\DevilSquareGround.obj
+         .\Release\DirPath.obj
+         .\Release\DragonEvent.obj
+         .\Release\DSProtocol.obj
+         .\Release\EDSProtocol.obj
+         .\Release\EledoradoEvent.obj
+         .\Release\Event.obj
+         .\Release\EventManagement.obj
+         .\Release\GambleSystem.obj
+         .\Release\GameMain.obj
+         .\Release\GameServer.obj
+         .\Release\GameShop.obj
+         .\Release\Gate.obj
+         .\Release\GensSystem.obj
+         .\Release\giocp.obj
+         .\Release\GMMng.obj
+         .\Release\gObjMonster.obj
+         .\Release\Guardian.obj
+         .\Release\GuardianStatue.obj
+         .\Release\GuildClass.obj
+         .\Release\IllusionTempleEvent.obj
+         .\Release\IllusionTempleProcess.obj
+         .\Release\ImperialGuardian.obj
+         .\Release\ImperialGuardianRewardExp.obj
+         .\Release\IpCache.obj
+         .\Release\ItemAddOption.obj
+         .\Release\ItemBag.obj
+         .\Release\ItemBagEx.obj
+         .\Release\ItemPrice.obj
+         .\Release\ItemSeedSphere.obj
+         .\Release\ItemSocketOptionSystem.obj
+         .\Release\ItemSystemFor380.obj
+         .\Release\JewelMixSystem.obj
+         .\Release\JewelOfHarmonySystem.obj
+         .\Release\KalimaGate.obj
+         .\Release\Kanturu.obj
+         .\Release\KanturuBattleOfMaya.obj
+         .\Release\KanturuBattleOfNightmare.obj
+         .\Release\KanturuBattleStanby.obj
+         .\Release\KanturuBattleUserMng.obj
+         .\Release\KanturuEntranceNPC.obj
+         .\Release\KanturuMaya.obj
+         .\Release\KanturuMonsterMng.obj
+         .\Release\KanturuNightmare.obj
+         .\Release\KanturuStateInfo.obj
+         .\Release\KanturuTowerOfRefinement.obj
+         .\Release\KanturuUtil.obj
+         .\Release\LargeRand.obj
+         .\Release\LifeStone.obj
+         .\Release\logproc.obj
+         .\Release\LogToFile.obj
+         .\Release\LuaFun.obj
+         .\Release\LuaExport.obj
+         .\Release\LuaMonsterDie.obj
+         .\Release\LuaNPC.obj
+         .\Release\LuaSample.obj
+         .\Release\LuckyItem.obj
+         .\Release\MagicDamage.obj
+         .\Release\MagicInf.obj
+         .\Release\MapClass.obj
+         .\Release\MapItem.obj
+         .\Release\MapServerManager.obj
+         .\Release\MasterLevelSkillTreeSystem.obj
+         .\Release\Mercenary.obj
+         .\Release\MiniDump.obj
+         .\Release\MixSystem.obj
+         .\Release\MonsterAttr.obj
+         .\Release\MonsterHerd.obj
+         .\Release\MonsterItemMng.obj
+         .\Release\MonsterRegenSystem.obj
+         .\Release\MonsterSetBase.obj
+         .\Release\MonsterStatCalc.obj
+         .\Release\MoveCheck.obj
+         .\Release\MoveCommand.obj
+         .\Release\MUHelper.obj
+         .\Release\MultiAttackHackCheck.obj
+         .\Release\MultiCheckSum.obj
+         .\Release\MyWinsockBase.obj
+         .\Release\MuLua.obj
+         .\Release\MuMsg.obj
+         .\Release\NewPVP.obj
+         .\Release\NpcTalk.obj
+         .\Release\NSerialCheck.obj
+         .\Release\ObjAttack.obj
+         .\Release\ObjBaseAttack.obj
+         .\Release\ObjCalCharacter.obj
+         .\Release\ObjUseSkill.obj
+         .\Release\PacketCheckSum.obj
+         .\Release\PacketStatistics.obj
+         .\Release\PartyClass.obj
+         .\Release\PCBangPointSystem.obj
+         .\Release\PeriodItemEx.obj
+         .\Release\protocol.obj
+         .\Release\QuestExpInfo.obj
+         .\Release\QuestExpLuaBind.obj
+         .\Release\QuestExpProgMng.obj
+         .\Release\QuestExpProtocol.obj
+         .\Release\QuestExpUserInfo.obj
+         .\Release\QuestExpUserMng.obj
+         .\Release\QuestInfo.obj
+         .\Release\QuestSystem.obj
+         .\Release\QuestUtil.obj
+         .\Release\Raklion.obj
+         .\Release\RaklionBattleOfSelupan.obj
+         .\Release\RaklionBattleUserMng.obj
+         .\Release\RaklionSelupan.obj
+         .\Release\RaklionUtil.obj
+         .\Release\ResetSystem.obj
+         .\Release\RingAttackEvent.obj
+         .\Release\ScriptEncode.obj
+         .\Release\SetItemMacro.obj
+         .\Release\SetItemOption.obj
+         .\Release\Shop.obj
+         .\Release\ShopPointEx.obj
+         .\Release\SkillAdditionInfo.obj
+         .\Release\SkillDelay.obj
+         .\Release\SkillHitBox.obj
+         .\Release\SProtocol.obj
+         .\Release\StatMng.obj
+         .\Release\StdAfx.obj
+         .\Release\TemporaryUserManager.obj
+         .\Release\TMonsterAI.obj
+         .\Release\TMonsterAIAgro.obj
+         .\Release\TMonsterAIAutomata.obj
+         .\Release\TMonsterAIElement.obj
+         .\Release\TMonsterAIGroup.obj
+         .\Release\TMonsterAIGroupMember.obj
+         .\Release\TMonsterAIMovePath.obj
+         .\Release\TMonsterAIRule.obj
+         .\Release\TMonsterAIRuleInfo.obj
+         .\Release\TMonsterAIUnit.obj
+         .\Release\TMonsterAIUtil.obj
+         .\Release\TMonsterSkillElement.obj
+         .\Release\TMonsterSkillElementInfo.obj
+         .\Release\TMonsterSkillManager.obj
+         .\Release\TMonsterSkillUnit.obj
+         .\Release\TNotice.obj
+         .\Release\TRandomPoolMgr.obj
+         .\Release\TServerInfoDisplayer.obj
+         .\Release\TSync.obj
+         .\Release\TUnion.obj
+         .\Release\TUnionInfo.obj
+         .\Release\TvTEvent.obj
+         .\Release\user.obj
+         .\Release\ViewportGuild.obj
+         .\Release\Weapon.obj
+         .\Release\WhisperCash.obj
+         .\Release\winutil.obj
+         .\Release\WinConsole.obj
+         .\Release\wsGameServer.obj
+         .\Release\wsJoinServerCli.obj
+         .\Release\WzMemScript.obj
+         .\Release\wsShopServerCli.obj
+         .\Release\WzAG.obj
+         .\Release\WzMultiCastSock.obj
+         .\Release\WzQueue.obj
+         .\Release\WZScriptEncode.obj
+         .\Release\WzUdp.obj
+         .\Release\XMasAttackEvent.obj
+         .\Release\XMasAttackEventData.obj
+         .\Release\zzzmathlib.obj
+         .\Release\MasterLevelSystem.obj
+         .\Release\ProbabilityItemBag.obj
+         SimpleModulus.lib
+         VMProtectSDK32.lib  /MAPINFO:EXPORTS
+         GameServer.vcxproj -> C:\Users\Administrador\Desktop\DuxGS-S6E3\GameServer\..\Release\GameServer.exe
+       Manifest:
+         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"..\Release\GameServer.exe;#1" /manifest .\Release\GameServer.exe.intermediate.manifest
        FinalizeBuildStatus:
          Se eliminará el archivo ".\Release\GameServer.unsuccessfulbuild".
          Aplicando tarea Touch a ".\Release\GameServer.lastbuildstate".
-     1>Compilación del proyecto terminada "C:\Users\Administrador\Desktop\DuxGSS6E3\zGameServer_NA\GameServer\GameServer.vcxproj" (build destinos).
+     1>Compilación del proyecto terminada "C:\Users\Administrador\Desktop\DuxGS-S6E3\GameServer\GameServer.vcxproj" (build destinos).
 
 Compilación correcta.
 
-Tiempo transcurrido 00:00:00.38
+Tiempo transcurrido 00:00:49.28

@@ -955,28 +955,44 @@ int CGMMng::ManagementProc(LPOBJ lpObj, char* szCmd, int aIndex) //00570A00
 		break;
 	case COMMAND_SETSTATSNULLEXP:
 		{
-			int iClass = lpObj->Class;//73C
+			pId = this->GetTokenString();
+
+			if ( pId == NULL )
+			{
+				return 0;
+			}
+
+			LPOBJ lpTargetObj = gObjFind(pId);
+
+			if ( lpTargetObj == NULL )
+			{
+				TNotice pNotice(1);
+				pNotice.SendToUser(lpObj->m_Index, "User Not Found");
+				return 0;
+			}
+			int iClass = lpTargetObj->Class;//73C
 			int iStrength = this->GetTokenNumber();//740
 			int iDexterity = this->GetTokenNumber();//744
 			int iVitality = this->GetTokenNumber();//748
 			int iEnergy = this->GetTokenNumber();//74C
 
-			lpObj->ChangeUP = 0;
-			lpObj->Experience = 0;
-			lpObj->Strength = iStrength;
-			lpObj->Dexterity = iDexterity;
-			lpObj->Vitality = iVitality;
-			lpObj->Energy = iEnergy;
+			lpTargetObj->ChangeUP = 0;
+			lpTargetObj->Experience = 0;
+			lpTargetObj->Strength = iStrength;
+			lpTargetObj->Dexterity = iDexterity;
+			lpTargetObj->Vitality = iVitality;
+			lpTargetObj->Energy = iEnergy;
 
 
-			lpObj->Life = (iVitality - DCInfo.DefClass[iClass].Vitality) * DCInfo.DefClass[iClass].LevelLife + DCInfo.DefClass[iClass].Life;
-			lpObj->MaxLife = (iVitality - DCInfo.DefClass[iClass].Vitality) * DCInfo.DefClass[iClass].LevelLife + DCInfo.DefClass[iClass].MaxLife;
-			lpObj->Mana = (iVitality - DCInfo.DefClass[iClass].Energy) * DCInfo.DefClass[iClass].LevelMana + DCInfo.DefClass[iClass].Mana;
-			lpObj->MaxMana = (iVitality - DCInfo.DefClass[iClass].Energy) * DCInfo.DefClass[iClass].LevelMana + DCInfo.DefClass[iClass].MaxMana;
+			lpTargetObj->Life = (iVitality - DCInfo.DefClass[iClass].Vitality) * DCInfo.DefClass[iClass].LevelLife + DCInfo.DefClass[iClass].Life;
+			lpTargetObj->MaxLife = (iVitality - DCInfo.DefClass[iClass].Vitality) * DCInfo.DefClass[iClass].LevelLife + DCInfo.DefClass[iClass].MaxLife;
+			lpTargetObj->Mana = (iVitality - DCInfo.DefClass[iClass].Energy) * DCInfo.DefClass[iClass].LevelMana + DCInfo.DefClass[iClass].Mana;
+			lpTargetObj->MaxMana = (iVitality - DCInfo.DefClass[iClass].Energy) * DCInfo.DefClass[iClass].LevelMana + DCInfo.DefClass[iClass].MaxMana;
 
+			GCServerMsgStringSend("Modi.Stat Complete", lpTargetObj->m_Index, 1);
 			GCServerMsgStringSend("Modi.Stat Complete", lpObj->m_Index, 1);
 
-			gObjCloseSet(lpObj->m_Index, 1);
+			gObjCloseSet(lpTargetObj->m_Index, 1);
 		}
 		break;
 	case COMMAND_UPDBCLASS:

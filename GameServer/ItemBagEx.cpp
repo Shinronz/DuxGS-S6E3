@@ -8,6 +8,10 @@
 #include "..\include\readscript.h"
 #include "..\common\winutil.h"
 #include "logproc.h"
+#ifdef SEPARATE_LOGS
+#include "LogToFile.h"
+CLogToFile g_MonsterDrop1("MonsterDrop", ".\\LOG\\MonsterDrop", TRUE);
+#endif
 
 CItemBagEx::CItemBagEx()
 {
@@ -1924,8 +1928,13 @@ BOOL CItemBagEx::DropCrywolfBossMonsterItem(int aIndex, BYTE btMapNumber, BYTE c
 		{
 			MapC[lpObj->MapNumber].MoneyItemDrop(g_iCrywolfBossMonsterDropZen, cX, cY);
 
+#ifdef SEPARATE_LOGS
+			g_MonsterDrop1.Output("[ Crywolf ][Reward] Boss Monster Item Drop [%s][%s] [%d Zen]",
+				lpObj->AccountID, lpObj->Name, g_iCrywolfBossMonsterDropZen);
+#else
 			LogAddTD("[ Crywolf ][Reward] Boss Monster Item Drop [%s][%s] [%d Zen]",
 				lpObj->AccountID, lpObj->Name, g_iCrywolfBossMonsterDropZen);
+#endif
 		}
 		else
 		{
@@ -1985,9 +1994,15 @@ BOOL CItemBagEx::DropCrywolfBossMonsterItem(int aIndex, BYTE btMapNumber, BYTE c
 			ItemSerialCreateSend(lpObj->m_Index, btMapNumber, X, Y, iType, iLevel, fDur,
 				iOption1, iOption2, iOption3, lpObj->m_Index, iExOption, 0);
 
+#ifdef SEPARATE_LOGS
+			g_MonsterDrop1.Output("[ Crywolf ][Reward] Boss Monster Item Drop [%s][%s] : (%d)(%d/%d) Item:(%s)%d Level:%d op1:%d op2:%d op3:%d ExOp:%d",
+				lpObj->AccountID, lpObj->Name, btMapNumber, X, Y, ItemAttribute[iType].Name,
+				iType, iLevel, iOption1, iOption2, iOption3, iExOption);
+#else
 			LogAddTD("[ Crywolf ][Reward] Boss Monster Item Drop [%s][%s] : (%d)(%d/%d) Item:(%s)%d Level:%d op1:%d op2:%d op3:%d ExOp:%d",
 				lpObj->AccountID, lpObj->Name, btMapNumber, X, Y, ItemAttribute[iType].Name,
 				iType, iLevel, iOption1, iOption2, iOption3, iExOption);
+#endif
 
 			return TRUE;
 		}

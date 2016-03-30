@@ -61,6 +61,11 @@
 #include "CraftSystem.h"
 #endif
 
+#ifdef SEPARATE_LOGS
+#include "LogToFile.h"
+CLogToFile g_MonsterDrop("MonsterDrop", ".\\LOG\\MonsterDrop", TRUE);
+#endif
+
 #include "GameShop.h"
 
 //0042B590 - identical
@@ -1077,12 +1082,12 @@ void JGPGetCharList(BYTE *lpRecv)
 		}
 		// ----
 #ifdef CHARCREATE_TEMP
-		if( gObj[aIndex].Summoner > 0 && HightLevel >= gCreateSUMLevel )
+		if( HightLevel >= gCreateSUMLevel ) //if( gObj[aIndex].Summoner > 0 && HightLevel >= gCreateSUMLevel )
 		{
 			GenerableClass += 1;
 		}
 		// ----
-		if( gObj[aIndex].RageFighter > 0 && HightLevel >= gCreateMONKLevel)
+		if( HightLevel >= gCreateMONKLevel) //if( gObj[aIndex].RageFighter > 0 && HightLevel >= gCreateMONKLevel)
 		{
 			GenerableClass += 8;
 		}
@@ -2440,7 +2445,11 @@ void ItemSerialCreateSend(int aIndex, BYTE MapNumber, BYTE x, BYTE y, int type, 
 			NewOption[5] = TRUE;
 		}
 
+#ifdef SEPARATE_LOGS
+		g_MonsterDrop.Output("Monster Item Drop Request [%s] [%d][%d][%d] : [%s][%d][%d][%d][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d]", gObj[aIndex].Name, MapNumber, pMsg.x, pMsg.y, ItemAttribute[pMsg.Type].Name, pMsg.Level, pMsg.Op1,pMsg.Op2, pMsg.Op3, NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4],	NewOption[5], NewOption[6], pMsg.SetOption);
+#else
 		LogAddTD("Monster Item Drop Request [%s] [%d][%d][%d] : [%s][%d][%d][%d][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d]", gObj[aIndex].Name, MapNumber, pMsg.x, pMsg.y, ItemAttribute[pMsg.Type].Name, pMsg.Level, pMsg.Op1,pMsg.Op2, pMsg.Op3, NewOption[0], NewOption[1], NewOption[2], NewOption[3], NewOption[4],	NewOption[5], NewOption[6], pMsg.SetOption);
+#endif
 	}
 
 	cDBSMng.Send( (char*)&pMsg, pMsg.h.size);
@@ -2827,9 +2836,12 @@ void ItemSerialCreateRecv(SDHP_ITEMCREATERECV * lpMsg)
 		{
 			NewOption[5] = TRUE;
 		}
-
+#ifdef SEPARATE_LOGS
+		g_MonsterDrop.Output("Monster Item Drop [%d][%d][%d] : serial:%u [%s][%d][%d][%d][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d]", mapnumber, lpMsg->x, lpMsg->y, lpMsg->m_Number, ItemAttribute[lpMsg->Type].Name, lpMsg->Level, lpMsg->Op1, lpMsg->Op2, lpMsg->Op3, NewOption[0],NewOption[1],NewOption[2],NewOption[3],NewOption[4],NewOption[5],NewOption[6], lpMsg->SetOption);	
+#else
 		LogAddTD("Monster Item Drop [%d][%d][%d] : serial:%u [%s][%d][%d][%d][%d] Ex:[%d,%d,%d,%d,%d,%d,%d] Set:[%d]", mapnumber, lpMsg->x, lpMsg->y, lpMsg->m_Number, ItemAttribute[lpMsg->Type].Name, lpMsg->Level, lpMsg->Op1, lpMsg->Op2, lpMsg->Op3, NewOption[0],NewOption[1],NewOption[2],NewOption[3],NewOption[4],NewOption[5],NewOption[6], lpMsg->SetOption);	
-	}
+#endif
+		}
 }
 
 /* * * * * * * * * * * * * * * * * * * * * 

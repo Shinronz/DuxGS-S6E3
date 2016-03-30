@@ -150,6 +150,7 @@
 #define DEBUG_SUMMONER_SKILL	0	// Write debug of Summoner skills
 #define DEBUG_EVENT_COUNTER		0	// Write debug of Event counter
 #define LOG_INMEDIATLY			0	// ?
+#define SEPARATE_LOGS
 // ----
 #define REMOVE_CHECKSUM			0	// Removing CheckSum checking
 #define USE_M_DRIVE				0	// Test M: drive use

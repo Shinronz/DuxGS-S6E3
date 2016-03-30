@@ -3849,6 +3849,11 @@ void gObjMonsterDieGiveItem(LPOBJ lpObj, LPOBJ lpTargetObj)
 		{	
 			item_drop = FALSE;
 		}
+		
+		if ( DropItem->m_Type == ITEMGET(13,14) && DropItem->m_Level != 0 && lpObj->MapNumber != MAP_INDEX_ICARUS) // Crest of Monarch
+		{
+			item_drop = FALSE;
+		}
 
 		if ( g_CrywolfSync.GetOccupationState() == 1 && g_iCrywolfApplyMvpPenalty )
 		{
